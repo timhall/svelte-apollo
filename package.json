@@ -1,0 +1,6 @@
+{
+  "name": "svelte-apollo",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "umd/index.js"
+}
