@@ -3,11 +3,12 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import buble from 'rollup-plugin-buble';
-// import uglify from 'rollup-plugin-uglify';
+import uglify from 'rollup-plugin-uglify';
 
-const production = process.env.NODE_ENV
-  ? process.env.NODE_ENV === 'production'
-  : !process.env.ROLLUP_WATCH;
+// const production = process.env.NODE_ENV
+//   ? process.env.NODE_ENV === 'production'
+//   : !process.env.ROLLUP_WATCH;
+const production = false;
 
 export default {
   input: 'src/index.js',
@@ -35,7 +36,7 @@ export default {
     filesize(),
 
     production && buble({ exclude: 'node_modules/**' }),
-    // production && uglify()
+    production && uglify()
   ],
 
   watch: {
