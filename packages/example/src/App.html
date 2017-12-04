@@ -1,7 +1,17 @@
-<div class="app">
-  Coming Soon...
-</div>
+{{#await time}}
+  Loading...
+{{then message}}
+  Coming {{message}}
+{{/await}}
 
 <script>
-  
+  export default {
+    data() {
+      return {
+        time: new Promise(resolve => {
+          setTimeout(() => resolve('Soon...'), 1000);
+        })
+      };
+    }
+  }
 </script>
