@@ -3,21 +3,21 @@
 Coming soon, graphql for svelte
 
 ```html
-{{#await query}}
+{{#await books}}
   Loading...
 {{then data}}
-  <dl>
-    <dt>Book</dt><dd>#{{id}}</dd>
-    <dt>Name</dt><dd>{{data.name}}</dd>
-    <dt>Author</dt><dd>{{data.author.name}}</dd>
-  </dl>
+  {{#each data.books as book}}
+    {{book.title}} by {{book.author.name}}
+  {{/each}}
 {{catch error}}
   Error...
 {{/await}}
 
 <form on:submit="create()">
-  <label for="name">Name</label>
-  <input type="text" id="name" bind:value="name" />
+  <h2>New Book<h2>
+
+  <label for="title">Title</label>
+  <input type="text" id="title" bind:value="title" />
   
   <label for="author">Author</label> 
   <input type="text" id="author" bind:value="author" />
@@ -27,32 +27,47 @@ Coming soon, graphql for svelte
 
 <script>
   import gql from 'graphql-tag';
-  import { graphql } from 'svelte-apollo'; 
+  import { graphql, query, connect, disconnect } from 'svelte-apollo'; 
 
   export default {
-    data: () => ({ name: '', author: '' }),
-
-    computed: {
-      query: ($graphql, id) => $graphql.query(gql`
-        book(id: $id) {
-          name,
-          author: {
+    data: () => ({
+      books: query(gql`{
+        books {
+          title
+          author {
             name
           }
         }
-      `, { id })
+      }`),
+      title: '',
+      author: ''
+    }),
+    
+    oncreate() {
+      connect(this);
+    },
+    ondestroy() {
+      disconnect(this);
     },
 
     methods: {
       async create() {
-        const name = this.get('name');
+        const title = this.get('title');
         const author = this.get('author');
 
+        if (!title || !author) return;
+
         await graphql(this).mutate(gql`
-          mutation {
-            ...
+          mutation addBook {
+            addBook(title: ${title}, author: ${author}) {
+              id
+              title
+              author {
+                name
+              }
+            }
           }
-        `, { name, author });
+        `);
       }
     }
   }
@@ -73,7 +88,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const graphql = new ApolloProvider(client);
+const graphql = new ApolloProvider({ client });
 const store = new Store({ graphql });
 
 const app = new App({

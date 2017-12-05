@@ -1,17 +1,61 @@
-{{#await time}}
-  Loading...
-{{then message}}
-  Coming {{message}}
+<h1>Posts</h1>
+
+{{#await posts}}
+  <p>Loading posts...</p>
+{{then data}}
+  <ul>
+    {{#each data.posts as post}}
+      <li>
+        {{post.title}} ({{post.author.firstName}} {{post.author.lastName}}) &mdash; {{post.votes}} votes
+        <button on:click="upvote(post.id)">Upvote</button>
+      </li>
+    {{/each}}
+  </ul>
+{{catch error}}
+  <p>{{error.message}}</p>
 {{/await}}
 
 <script>
+  import gql from 'graphql-tag';
+  import { graphql, query, connect, disconnect } from 'svelte-apollo';
+
   export default {
     data() {
       return {
-        time: new Promise(resolve => {
-          setTimeout(() => resolve('Soon...'), 1000);
-        })
+        posts: query(gql`{
+          posts {
+            id
+            title
+            author {
+              firstName
+              lastName
+            }
+            votes
+          }
+        }`)
       };
+    },
+
+    oncreate() {
+      connect(this);
+    },
+
+    ondestroy() {
+      disconnect(this);
+    },
+
+    methods: {
+      async upvote(postId) {
+        await graphql(this).mutate(gql`
+          mutation upvotePost {
+            upvotePost(postId: ${postId}) {
+              id
+              title
+              votes
+            }
+          }
+        `);
+      }
     }
   }
 </script>

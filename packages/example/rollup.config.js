@@ -8,13 +8,18 @@ import filesize from 'rollup-plugin-filesize';
 const production = false;
 
 export default {
+  name: 'app',
   input: 'src/main.js',
   output: {
     sourcemap: true,
     format: 'iife',
-    file: 'public/bundle.js'
+    file: 'public/bundle.js',
+    globals: {
+      'zen-observable': 'Observable'
+    }
   },
-  name: 'app',
+  external: ['zen-observable'],
+
   plugins: [
     replace({
       'process.env.NODE_ENV': JSON.stringify(
