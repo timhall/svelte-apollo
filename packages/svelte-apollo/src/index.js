@@ -1,25 +1,37 @@
+import { __DEV__ } from './utils';
+
 export { default as ApolloProvider } from './provider';
 
 const connections = new WeakMap();
 
 export function graphql(component) {
-  const provider = component.store.get('graphql');
+  const provider = component.store && component.store.get('graphql');
+
   if (!provider) {
-    throw new Error(`Missing 'graphql' ApolloProvider instance in store.`)
+    throw new Error(`'graphql' ApolloProvider not found in store.`);
   }
 
   return provider;
 }
 
 export function connect(component) {
+  // oncreate: connect is supported by accepting 'this' as component
+  component = component || this;
+
   if (connections.has(component)) {
-    throw new Error('Component has already been connected.');
+    if (__DEV__) {
+      console.warn(
+        `Component has already been connected to graphql. 'connect' should only be called once per component, typically in 'oncreate'.`
+      );
+    }
+
+    return;
   }
 
-  const provider = graphql(component);
-
   const subscriptions = [];
+  const provider = graphql(component);
   const values = component.get();
+  
   for (const key in values) {
     if (!values[key] || !values[key].__graphql) continue;
 
@@ -36,13 +48,19 @@ export function connect(component) {
 }
 
 export function disconnect(component) {
+  component = component || this;
   const connection = connections.get(component);
+
   if (!connection) {
-    throw new Error('Connection not found for component, was this component connected?');
+    if (__DEV__) {
+      console.warn(`Attempted to disconnect component that has not been connected to graphql.`);
+    }
+
+    return;
   }
 
   connection.subscriptions.forEach(subscription => {
-    subscription.unsubscribe()
+    subscription.unsubscribe();
   });
 }
 
@@ -66,4 +84,17 @@ export function query(query, options) {
 export function prepare(query, options) {
   // Create prepared query that can be evaluated from computed (e.g. for bound variables)
   // TODO
+}
+
+export function mutate(mutation, options) {
+  // Create mutation function for use in methods
+  return async function() {
+    const provider = graphql(this);
+    const query =
+      typeof mutation === 'function'
+        ? await mutation.apply(this, arguments)
+        : mutation;
+
+    await provider.mutate(query, options);
+  };
 }

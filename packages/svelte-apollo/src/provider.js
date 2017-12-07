@@ -1,11 +1,11 @@
 export default class ApolloProvider {
-  constructor(options = {}) {
+  constructor(options) {
     const { client } = options;
 
     if (!client) {
       throw new Error(`'client' is a required option for ApolloProvider.`);
     }
-  
+
     this.client = client;
   }
 
@@ -45,7 +45,7 @@ export default class ApolloProvider {
           resolved = true;
           return;
         }
-  
+
         const values = { [key]: Promise.reject(error) };
         component.set(values);
       }
