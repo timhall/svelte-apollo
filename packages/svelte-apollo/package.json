@@ -1,6 +1,6 @@
 {
   "name": "svelte-apollo",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "umd/svelte-apollo.js",
   "module": "es/svelte-apollo.js",
@@ -20,5 +20,7 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-uglify": "^2.0.1"
   },
-  "workspaces": ["example"]
+  "workspaces": [
+    "example"
+  ]
 }
