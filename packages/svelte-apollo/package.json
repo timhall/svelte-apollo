@@ -7,6 +7,10 @@
   "scripts": {
     "build": "rollup -c"
   },
+  "files": [
+    "es",
+    "umd"
+  ],
   "devDependencies": {
     "rollup": "^0.52.0",
     "rollup-plugin-buble": "^0.18.0",
