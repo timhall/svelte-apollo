@@ -1,6 +1,5 @@
 umd
 es
-packages/example/public/bundle.*
 
 node_modules
 .DS_store
