@@ -1,5 +1,3 @@
-umd
-es
-
+dist
 node_modules
 .DS_store

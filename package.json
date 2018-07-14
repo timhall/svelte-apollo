@@ -1,23 +1,25 @@
 {
   "name": "svelte-apollo",
   "version": "0.1.1",
+  "author": "Tim Hall <tim.hall.engr@gmail.com>",
   "license": "MIT",
-  "main": "umd/svelte-apollo.js",
-  "module": "es/svelte-apollo.js",
+  "repository": "https://github.com/timhall/svelte-apollo.git",
+  "main": "dist/svelte-apollo.umd.js",
+  "module": "src/index.js",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "svelte-observable": "^0.1.1"
+  },
+  "devDependencies": {
+    "rollup": "^0.62.0",
+    "rollup-plugin-buble": "^0.19.2",
+    "rollup-plugin-filesize": "^2.0.0"
   },
   "files": [
-    "es",
-    "umd"
-  ],
-  "devDependencies": {
-    "rollup": "^0.52.0",
-    "rollup-plugin-buble": "^0.18.0",
-    "rollup-plugin-commonjs": "^8.2.6",
-    "rollup-plugin-filesize": "^1.5.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-uglify": "^2.0.1"
-  }
+    "src",
+    "dist"
+  ]
 }

@@ -1,70 +1,71 @@
 # svelte-apollo
 
-graphql for svelte
+Svelte integration for Apollo GraphQL.
 
 ```html
-{{#await books}}
+{#await books}
   Loading...
-{{then data}}
-  {{#each data.books as book}}
-    {{book.title}} by {{book.author.name}}
-  {{/each}}
-{{catch error}}
-  Error...
-{{/await}}
+{:then data}
+  {#each data.books as book}
+    {book.title} by {book.author.name}
+  {/each}
+{:catch error}
+  Error: {error}
+{/await}
 
 <form on:submit="create()">
   <h2>New Book<h2>
 
   <label for="title">Title</label>
-  <input type="text" id="title" bind:value="title" />
+  <input type="text" id="title" bind:value=title />
   
   <label for="author">Author</label> 
-  <input type="text" id="author" bind:value="author" />
+  <input type="text" id="author" bind:value=author />
 
   <button type="submit">Add Book</button>
 </form>
 
 <script>
   import gql from 'graphql-tag';
-  import { graphql, query, connect, disconnect } from 'svelte-apollo'; 
+  import { query, mutation, connect } from 'svelte-apollo'; 
+
+  const GET_BOOKS = gql`{
+    books {
+      title
+      author {
+        name
+      }
+    }
+  }`
+
+  const ADD_BOOK = gql`
+    mutation addBook($title: String!, $author: String!) {
+      addBook(title: $title, author: $author) {
+        id
+        title
+        author {
+          name
+        }
+      }
+    }
+  `;
 
   export default {
-    data: () => ({
-      books: query(gql`{
-        books {
-          title
-          author {
-            name
-          }
-        }
-      }`),
-      title: '',
-      author: ''
-    }),
+    data() {
+      return {
+        books: query(GET_BOOKS),
+        title: '',
+        author: ''
+      };
+    },
     
-    oncreate: connect,
-    ondestroy: disconnect,
+    onstate: connect,
 
     methods: {
-      async create() {
-        const title = this.get('title');
-        const author = this.get('author');
-
+      create: mutation(ADD_BOOK, (addBook, { title, author }) => {
         if (!title || !author) return;
-
-        await graphql(this).mutate(gql`
-          mutation addBook {
-            addBook(title: ${title}, author: ${author}) {
-              id
-              title
-              author {
-                name
-              }
-            }
-          }
-        `);
-      }
+        addBook({ variables: { title, author } });
+      })
     }
   }
 </script>
@@ -74,21 +75,15 @@ graphql for svelte
 import { Store } from 'svelte/store';
 import App from './App.html';
 
+import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'svelte-apollo';
-import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 
-const client = new ApolloClient({
-  link: new HttpLink(),
-  cache: new InMemoryCache()
-});
-
+const client = new ApolloClient({ uri: '...' });
 const graphql = new ApolloProvider({ client });
 const store = new Store({ graphql });
 
 const app = new App({
-  target: document.getElementById('app'),
+  target: document.body,
   store
 });
 ```
