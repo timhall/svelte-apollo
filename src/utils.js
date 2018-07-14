@@ -1,1 +1,2 @@
-export const __DEV__ = typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production' || true;
+const SVELTE_APOLLO =
+  typeof Symbol === 'function' ? Symbol('svelte-apollo') : '@@svelte-apollo';

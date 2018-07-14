@@ -140,6 +140,33 @@ add pass them as variables to the mutation, and perform other tasks before execu
 </script>
 ```
 
+## subscription
+
+`subscription` allows you to subscribe to new values directly in your component.
+
+```html
+{#await new_books}
+  Waiting for new books...
+{:then data}
+  New Book: {data.book}
+{/await}
+
+<script>
+  import { subscription } from 'svelte-apollo';
+  import { NEW_BOOKS } from './queries';
+
+  export default {
+    data() {
+      return {
+        new_books: subscription(NEW_BOOKS)
+      };
+    }
+
+    // subscription also works in computed
+  }
+</script>
+```
+
 ## refetch
 
 Explicitly refetch a query with the `refetch` method.
