@@ -265,8 +265,12 @@ import { init } from 'sapper/runtime.js';
 import { Store } from 'svelte/store.js';
 import { routes } from './manifest/client.js';
 import { createProvider } = require('svelte-sapper');
+import App from './App.html';
 
-init(document.querySelector('#sapper'), routes, {
+init({
+  App,
+  target: document.querySelector('#sapper'),
+  routes, 
   store: data => {
     const client = new ApolloClient({ /* ... */ });
 
