@@ -7,7 +7,10 @@ import { routes } from './manifest/server.js';
 import App from './App.html';
 
 import ApolloClient from 'apollo-boost';
+import fetch from 'node-fetch';
 import { createProvider } from '../../';
+
+global.fetch = fetch;
 
 polka() // You can also use Express
   .use(
