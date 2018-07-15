@@ -11,7 +11,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "svelte-observable": "^0.1.2"
+    "svelte-observable": "^0.2.0"
   },
   "devDependencies": {
     "rollup": "^0.62.0",

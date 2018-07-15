@@ -8,13 +8,14 @@ export default {
       file: 'dist/svelte-apollo.umd.js',
       format: 'umd',
       name: 'SvelteApollo',
-      sourcemap: true
+      sourcemap: true,
+      globals: {
+        'svelte-observable': 'SvelteObservable'
+      }
     }
   ],
-  plugins: [
-    filesize(),
-    buble()
-  ],
+  external: ['svelte-observable'],
+  plugins: [filesize(), buble()],
 
   watch: {
     chokidar: true

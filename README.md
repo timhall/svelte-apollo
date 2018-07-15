@@ -71,10 +71,10 @@ import { Store } from 'svelte/store';
 import App from './App.html';
 
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'svelte-apollo';
+import { createProvider } from 'svelte-apollo';
 
 const client = new ApolloClient({ uri: '...' });
-const graphql = new ApolloProvider({ client });
+const graphql = createProvider(client);
 const store = new Store({ graphql });
 
 const app = new App({
@@ -215,7 +215,7 @@ Once connected, svelte-apollo handles subscriptions and properly unsubscribes wh
 </script>
 ```
 
-## ApolloProvider
+## createProvider
 
 The Apollo provider is passed through the application's `sveltejs/store` so that it is available in all components without having to explicitly pass it to each one.
 
@@ -224,14 +224,56 @@ import { Store } from 'svelte/store';
 import App from './App.html';
 
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from 'svelte-apollo';
+import { createProvider } from 'svelte-apollo';
 
 const client = new ApolloClient({ uri: '...' });
-const graphql = new ApolloProvider({ client });
+const graphql = createProvider(client);
 const store = new Store({ graphql });
 
 const app = new App({
   target: document.body,
   store
+});
+```
+
+### With sapper
+
+```js
+// app/server.js
+const { Store } = require('svelte/store.js');
+const { createProvider } = require('svelte-sapper');
+
+express() // or Polka, or a similar framework
+  .use(
+    // ...
+    sapper({
+      routes,
+      store: request => {
+        const client = new ApolloClient({ /* ... */ });
+
+        return new Store({
+          graphql: createProvider(client, { ssr: true })
+        });
+      }
+    })
+  )
+  .listen(process.env.PORT);
+```
+
+```js
+import { init } from 'sapper/runtime.js';
+import { Store } from 'svelte/store.js';
+import { routes } from './manifest/client.js';
+import { createProvider } = require('svelte-sapper');
+
+init(document.querySelector('#sapper'), routes, {
+  store: data => {
+    const client = new ApolloClient({ /* ... */ });
+
+    return new Store({
+      ...data,
+      graphql: createProvider(client, { from: data.graphql })
+    });
+  }
 });
 ```
