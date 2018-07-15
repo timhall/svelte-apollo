@@ -1,4 +1,10 @@
-dist
+/dist
+
+/example/.sapper/
+/example/export/
+/example/build/
+/example/app/manifest/
+
 node_modules
 .vscode
 .DS_store
