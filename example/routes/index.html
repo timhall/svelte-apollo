@@ -1,5 +1,6 @@
 <h1>svelte-apollo</h1>
-<p>Books (<button on:click=refetch(books)>Reload</button>)</p>
+
+<h2>Books</h2>
 <ul>
   {#await books}
     <li>Loading...</li>
@@ -15,7 +16,9 @@
     <li>ERROR: {error}</li>
   {/await}
 </ul>
+<button on:click=refetch(books)>Reload</button>
 
+<h2>Add Author</h2>
 <form on:submit=addAuthor(event)>
   <label for="author-name">Author</label>
   <input type="text" id="author-name" bind:value=name />
@@ -23,6 +26,7 @@
   <button type="submit">Add Author</button>
 </form>
 
+<h2>Add Book</h2>
 <form on:submit=addBook(event)>
   <label for="book-author">Author</label>
   <span>
@@ -136,8 +140,6 @@
 
         const { name } = this.get();
         if (!name) return;
-
-        console.log('name', name);
 
         await addAuthor({
           variables: { name },
