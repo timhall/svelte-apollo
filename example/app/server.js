@@ -52,17 +52,15 @@ const resolvers = {
     authors: () => authors
   },
   Mutation: {
-    addAuthor(_, name) {
+    addAuthor(_, { name }) {
       const author = { id: authors.length, name };
       authors.push(author);
-      console.log('addAuthor', author, authors);
 
       return author;
     },
     addBook(_, { title, author }) {
       const book = { id: books.length, title, author: Number(author) };
       books.push(book);
-      console.log('addBook', book, books);
 
       return book;
     }

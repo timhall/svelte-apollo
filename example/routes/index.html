@@ -16,6 +16,13 @@
   {/await}
 </ul>
 
+<form on:submit=addAuthor(event)>
+  <label for="author-name">Author</label>
+  <input type="text" id="author-name" bind:value=name />
+
+  <button type="submit">Add Author</button>
+</form>
+
 <form on:submit=addBook(event)>
   <label for="book-author">Author</label>
   <span>
@@ -47,6 +54,7 @@
       id
       title
       author {
+        id
         name
       }
     }
@@ -59,12 +67,22 @@
     }
   }`;
 
+  const ADD_AUTHOR = gql`
+    mutation addAuthor($name: String!) {
+      addAuthor(name: $name) {
+        id
+        name
+      }
+    }
+  `;
+
   const ADD_BOOK = gql`
     mutation addBook($title: String!, $author: ID!) {
       addBook(title: $title, author: $author) {
         id
         title
         author {
+          id
           name
         }
       }
@@ -76,6 +94,7 @@
       return {
         books: query(GET_BOOKS),
         authors: query(GET_AUTHORS),
+        name: '',
         author: 0,
         title: ''
       };
@@ -84,7 +103,10 @@
     async preload(req) {
       // Load data into cache
       const client = consumer(this);
-      await client.query({ query: GET_BOOKS });
+      await Promise.all([
+        client.query({ query: GET_BOOKS }),
+        client.query({ query: GET_AUTHORS })
+      ]);
     },
 
     methods: {
@@ -98,7 +120,7 @@
           variables: { title, author },
           update: (cache, { data: { addBook } }) => {
             const { books } = cache.readQuery({ query: GET_BOOKS });
-            console.log(books, addBook);
+            
             cache.writeQuery({
               query: GET_BOOKS,
               data: { books: books.concat([addBook]) }
@@ -108,6 +130,30 @@
 
         this.set({ title: '' });
       }),
+
+      addAuthor: mutation(ADD_AUTHOR, addAuthor => async function(event) {
+        event.preventDefault();
+
+        const { name } = this.get();
+        if (!name) return;
+
+        console.log('name', name);
+
+        await addAuthor({
+          variables: { name },
+          update: (cache, { data: { addAuthor } }) => {
+            const { authors } = cache.readQuery({ query: GET_AUTHORS });
+
+            cache.writeQuery({
+              query: GET_AUTHORS,
+              data: { authors: authors.concat([addAuthor]) }
+            });
+          }
+        });
+
+        this.set({ name: '' });
+      }),
+
       refetch
     },
 
