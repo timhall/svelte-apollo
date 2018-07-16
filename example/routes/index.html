@@ -1,32 +1,114 @@
 <h1>svelte-apollo</h1>
-<p>
-  Message:
-  {#await message}
-    Loading...
+<p>Books (<button on:click=refetch(books)>Reload</button>)</p>
+<ul>
+  {#await books}
+    <li>Loading...</li>
   {:then result}
-    {result.data.hello}
+    {#if !result.data.books.length}
+      <li>No books found.</li>
+    {:else}
+      {#each result.data.books as book (book.id)}
+        <li>{book.title} by {book.author.name}</li>
+      {/each}
+    {/if}
   {:catch error}
-    {error.stack}
-  {/await}</p>
+    <li>ERROR: {error}</li>
+  {/await}
+</ul>
+
+<form on:submit=addBook(event)>
+  <label for="book-author">Author</label>
+  <span>
+    {#await authors}
+      Loading...>
+    {:then result}
+      <select id="book-author" bind:value=author>
+        {#each result.data.authors as author (author.id)}
+          <option value={author.id}>{author.name}</option>
+        {/each}
+      </select>
+    {:catch}
+      Failed.
+    {/await}
+  </span>
+
+  <label for="book-title">Title</label>
+  <input type="text" id="book-title" bind:value=title />
+
+  <button type="submit">Add Book</button>
+</form>
 
 <script>
   import gql from 'graphql-tag';
-  import { connect, query, consumer } from '../../';
+  import { connect, query, mutation, consumer, refetch } from '../../';
 
-  const GET_HELLO = gql`{
-    hello
+  const GET_BOOKS = gql`{
+    books {
+      id
+      title
+      author {
+        name
+      }
+    }
+  }`
+
+  const GET_AUTHORS = gql`{
+    authors {
+      id
+      name
+    }
   }`;
+
+  const ADD_BOOK = gql`
+    mutation addBook($title: String!, $author: ID!) {
+      addBook(title: $title, author: $author) {
+        id
+        title
+        author {
+          name
+        }
+      }
+    }
+  `
 
   export default {
     data() {
       return {
-        message: query(GET_HELLO)
+        books: query(GET_BOOKS),
+        authors: query(GET_AUTHORS),
+        author: 0,
+        title: ''
       };
     },
 
     async preload(req) {
+      // Load data into cache
       const client = consumer(this);
-      await client.query({ query: GET_HELLO });
+      await client.query({ query: GET_BOOKS });
+    },
+
+    methods: {
+      addBook: mutation(ADD_BOOK, addBook => async function(event) {
+        event.preventDefault();
+        
+        const { author, title } = this.get();
+        if (!title) return;
+
+        await addBook({
+          variables: { title, author },
+          update: (cache, { data: { addBook } }) => {
+            const { books } = cache.readQuery({ query: GET_BOOKS });
+            console.log(books, addBook);
+            cache.writeQuery({
+              query: GET_BOOKS,
+              data: { books: books.concat([addBook]) }
+            });
+          }
+        });
+
+        this.set({ title: '' });
+      }),
+      refetch
     },
 
     onstate: connect

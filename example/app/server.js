@@ -16,17 +16,66 @@ import fetch from 'node-fetch';
 global.fetch = fetch;
 
 const typeDefs = gql`
+  type Author {
+    id: ID!
+    name: String
+    books: [Book]
+  }
+  type Book {
+    id: ID!
+    title: String
+    author: Author
+  }
+
   type Query {
-    hello: String
+    books: [Book]
+    authors: [Author]
+  }
+
+  type Mutation {
+    addAuthor(name: String!): Author
+    addBook(title: String!, author: ID!): Book
   }
 
   schema {
     query: Query
+    mutation: Mutation
   }
 `;
+
+const books = [{ id: 0, title: 'The Great Gatsby', author: 0 }];
+const authors = [{ id: 0, name: 'F. Scott Fitzgerald' }];
+
 const resolvers = {
   Query: {
-    hello: () => 'Howdy!'
+    books: () => books,
+    authors: () => authors
+  },
+  Mutation: {
+    addAuthor(_, name) {
+      const author = { id: authors.length, name };
+      authors.push(author);
+      console.log('addAuthor', author, authors);
+
+      return author;
+    },
+    addBook(_, { title, author }) {
+      const book = { id: books.length, title, author: Number(author) };
+      books.push(book);
+      console.log('addBook', book, books);
+
+      return book;
+    }
+  },
+  Author: {
+    books(author) {
+      return books.filter(book => book.author === author.id);
+    }
+  },
+  Book: {
+    author(book) {
+      return authors.find(author => author.id === book.author);
+    }
   }
 };
 
@@ -56,7 +105,7 @@ app
         });
         const graphql = createProvider(client, { ssr: true });
 
-        return new Store({ graphql, test: 'Howdy!' });
+        return new Store({ graphql });
       }
     })
   )

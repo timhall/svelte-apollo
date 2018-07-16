@@ -7,7 +7,7 @@ export default function mutation(graphql, options) {
       client.mutate(assign({ mutation: graphql }, options));
 
     if (typeof options === 'function') {
-      return options(mutate)(...args);
+      return options(mutate).apply(this, args);
     } else {
       return mutate(options);
     }
