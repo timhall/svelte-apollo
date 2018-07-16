@@ -9,21 +9,26 @@
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
-    "example": "cd example && sapper dev"
+    "example": "cd example && sapper dev",
+    "test": "jest"
   },
   "dependencies": {
     "apollo-link-http": "^1.5.4",
     "apollo-server-express": "^2.0.0-rc.8",
-    "svelte-observable": "^0.2.0"
+    "svelte-observable": "^0.2.1"
   },
   "devDependencies": {
     "apollo-boost": "^0.1.10",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.4.0",
+    "babel-preset-env": "^1.7.0",
     "compression": "^1.7.1",
     "express": "^4.16.3",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
+    "jest": "^23.4.1",
     "node-fetch": "^2.1.2",
     "rollup": "^0.62.0",
     "rollup-plugin-buble": "^0.19.2",

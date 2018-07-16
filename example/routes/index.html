@@ -23,7 +23,7 @@
   <label for="author-name">Author</label>
   <input type="text" id="author-name" bind:value=name />
 
-  <button type="submit">Add Author</button>
+  <button type="submit" disabled={author_disabled}>Add Author</button>
 </form>
 
 <h2>Add Book</h2>
@@ -46,7 +46,7 @@
   <label for="book-title">Title</label>
   <input type="text" id="book-title" bind:value=title />
 
-  <button type="submit">Add Book</button>
+  <button type="submit" disabled={book_disabled}>Add Book</button>
 </form>
 
 <script>
@@ -104,6 +104,11 @@
       };
     },
 
+    computed: {
+      author_disabled: ({ name }) => name === '',
+      book_disabled: ({ title }) => title === ''
+    },
+
     async preload(req) {
       // Load data into cache
       const client = consumer(this);
@@ -124,7 +129,7 @@
           variables: { title, author },
           update: (cache, { data: { addBook } }) => {
             const { books } = cache.readQuery({ query: GET_BOOKS });
-            
+
             cache.writeQuery({
               query: GET_BOOKS,
               data: { books: books.concat([addBook]) }

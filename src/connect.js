@@ -1,5 +1,5 @@
 import { subscribe, SVELTE_OBSERVABLE } from 'svelte-observable';
-import { SVELTE_APOLLO, consumer } from './utils';
+import { SVELTE_APOLLO, consumer, nonenumerable } from './utils';
 
 export default function connect(state) {
   const { changed, current } = state;
@@ -11,7 +11,7 @@ export default function connect(state) {
     const graphql = value && value[SVELTE_APOLLO];
 
     if (graphql) {
-      value[SVELTE_OBSERVABLE] = graphql(client);
+      nonenumerable(value, SVELTE_OBSERVABLE, graphql(client));
     }
   }
 

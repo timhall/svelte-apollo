@@ -1,4 +1,4 @@
-import { SVELTE_APOLLO } from './utils';
+import { SVELTE_APOLLO, nonenumerable } from './utils';
 
 export default function createProvider(client, options = {}) {
   if (!client) {
@@ -6,10 +6,7 @@ export default function createProvider(client, options = {}) {
   }
 
   const provider = {};
-  Object.defineProperty(provider, SVELTE_APOLLO, {
-    value: client,
-    enumerable: false
-  });
+  nonenumerable(provider, SVELTE_APOLLO, client);
 
   if (options.ssr) {
     // Extremely simplified version of apollo-cache-persist

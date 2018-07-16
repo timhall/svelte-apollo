@@ -1,6 +1,6 @@
 import { consumer, assign } from './utils';
 
-export default function mutation(graphql, options) {
+export default function mutation(graphql, options = {}) {
   return function(...args) {
     const client = consumer(this);
     const mutate = options =>
