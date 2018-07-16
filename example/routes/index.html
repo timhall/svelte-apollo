@@ -1,1 +1,34 @@
 <h1>svelte-apollo</h1>
+<p>
+  Message:
+  {#await message}
+    Loading...
+  {:then result}
+    {result.data.hello}
+  {:catch error}
+    {error.stack}
+  {/await}</p>
+
+<script>
+  import gql from 'graphql-tag';
+  import { connect, query, consumer } from '../../';
+
+  const GET_HELLO = gql`{
+    hello
+  }`;
+
+  export default {
+    data() {
+      return {
+        message: query(GET_HELLO)
+      };
+    },
+
+    async preload(req) {
+      const client = consumer(this);
+      await client.query({ query: GET_HELLO });
+    },
+
+    onstate: connect
+  }
+</script>

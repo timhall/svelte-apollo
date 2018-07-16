@@ -11,11 +11,11 @@ init({
   target: document.querySelector('#sapper'),
   routes,
   store: data => {
-    const client = new ApolloClient({ uri: '...' });
+    const client = new ApolloClient({ uri: '/graphql' });
 
     return new Store({
       ...data,
-      graphql: createProvider(client, { from: data.graphql })
+      graphql: createProvider(client, { from: data && data.graphql })
     });
   }
 });

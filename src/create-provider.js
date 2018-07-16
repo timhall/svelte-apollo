@@ -5,9 +5,11 @@ export default function createProvider(client, options = {}) {
     throw new Error('"client" is required and should be an ApolloClient');
   }
 
-  const provider = {
-    [SVELTE_APOLLO]: client
-  };
+  const provider = {};
+  Object.defineProperty(provider, SVELTE_APOLLO, {
+    value: client,
+    enumerable: false
+  });
 
   if (options.ssr) {
     // Extremely simplified version of apollo-cache-persist

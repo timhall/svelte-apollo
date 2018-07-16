@@ -9,8 +9,8 @@ Svelte integration for Apollo GraphQL.
 
 {#await books}
   Loading...
-{:then data}
-  {#each data.books as book}
+{:then result}
+  {#each result.data.books as book}
     {book.title} by {book.author.name}
   {/each}
 {:catch error}
@@ -147,8 +147,8 @@ add pass them as variables to the mutation, and perform other tasks before execu
 ```html
 {#await new_books}
   Waiting for new books...
-{:then data}
-  New Book: {data.book}
+{:then result}
+  New Book: {result.data.book}
 {/await}
 
 <script>

@@ -1,4 +1,4 @@
-export { SVELTE_APOLLO } from './utils';
+export { SVELTE_APOLLO, consumer } from './utils';
 
 export { default as createProvider } from './create-provider';
 export { default as connect } from './connect';
