@@ -1,18 +1,21 @@
 import { init } from 'sapper/runtime.js';
+import { Store } from 'svelte/store.js';
 import { routes } from './manifest/client.js';
-import { Store } from 'svelte/store';
+import App from './App.html';
 
 import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '../../';
+import { createProvider } from '../../';
 
-const client = new ApolloClient({ uri: '/graphql' });
-const graphql = new ApolloProvider({ client });
-
-// `routes` is an array of route objects injected by Sapper
-init(document.querySelector('#sapper'), routes, {
+init({
+  App,
+  target: document.querySelector('#sapper'),
+  routes,
   store: data => {
-    return new Store(Object.assign({ graphql }, data));
+    const client = new ApolloClient({ uri: '/graphql' });
+
+    return new Store({
+      ...data,
+      graphql: createProvider(client, { from: data && data.graphql })
+    });
   }
 });
-
-if (module.hot) module.hot.accept();

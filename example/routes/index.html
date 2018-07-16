@@ -1,64 +1,164 @@
-<:Head>
-	<title>Sapper project template</title>
-</:Head>
+<h1>svelte-apollo</h1>
 
-<Layout page='home'>
-	<h1>svelte-apollo</h1>
-	{{#await posts}}
-		<p>Loading...</p>
-	{{then data}}
-		<ul>
-			{{#each data.posts as post}}
-				<li>{{post.title}} by {{post.author.firstName}} {{post.author.lastName}} &mdash; {{post.votes}} votes</li>
-				<button on:click="upvote(post.id)">Upvote</button>
-			{{/each}}
-		</ul>
-	{{catch error}}
-		<p>Request Failed</p>
-	{{/await}}
-</Layout>
+<h2>Books</h2>
+<ul>
+  {#await books}
+    <li>Loading...</li>
+  {:then result}
+    {#if !result.data.books.length}
+      <li>No books found.</li>
+    {:else}
+      {#each result.data.books as book (book.id)}
+        <li>{book.title} by {book.author.name}</li>
+      {/each}
+    {/if}
+  {:catch error}
+    <li>ERROR: {error}</li>
+  {/await}
+</ul>
+<button on:click=refetch(books)>Reload</button>
 
-<style>
-	
-</style>
+<h2>Add Author</h2>
+<form on:submit=addAuthor(event)>
+  <label for="author-name">Author</label>
+  <input type="text" id="author-name" bind:value=name />
+
+  <button type="submit">Add Author</button>
+</form>
+
+<h2>Add Book</h2>
+<form on:submit=addBook(event)>
+  <label for="book-author">Author</label>
+  <span>
+    {#await authors}
+      Loading...>
+    {:then result}
+      <select id="book-author" bind:value=author>
+        {#each result.data.authors as author (author.id)}
+          <option value={author.id}>{author.name}</option>
+        {/each}
+      </select>
+    {:catch}
+      Failed.
+    {/await}
+  </span>
+
+  <label for="book-title">Title</label>
+  <input type="text" id="book-title" bind:value=title />
+
+  <button type="submit">Add Book</button>
+</form>
 
 <script>
-	import Layout from './_components/Layout.html';
-	import gql from 'graphql-tag';
-	import { query, mutate, connect, disconnect } from '../../';
+  import gql from 'graphql-tag';
+  import { connect, query, mutation, consumer, refetch } from '../../';
 
-	export default {
-		components: {
-			Layout
-		},
+  const GET_BOOKS = gql`{
+    books {
+      id
+      title
+      author {
+        id
+        name
+      }
+    }
+  }`
 
-		data: () => ({
-      posts: query(gql`{
-        posts {
-					id
-          title
-          author {
-						firstName,
-						lastName
-					},
-					votes
+  const GET_AUTHORS = gql`{
+    authors {
+      id
+      name
+    }
+  }`;
+
+  const ADD_AUTHOR = gql`
+    mutation addAuthor($name: String!) {
+      addAuthor(name: $name) {
+        id
+        name
+      }
+    }
+  `;
+
+  const ADD_BOOK = gql`
+    mutation addBook($title: String!, $author: ID!) {
+      addBook(title: $title, author: $author) {
+        id
+        title
+        author {
+          id
+          name
         }
-      }`)
-		}),
+      }
+    }
+  `
 
-		oncreate: connect,
-		ondestroy: disconnect,
+  export default {
+    data() {
+      return {
+        books: query(GET_BOOKS),
+        authors: query(GET_AUTHORS),
+        name: '',
+        author: 0,
+        title: ''
+      };
+    },
 
-		methods: {
-			upvote: mutate(postId => gql`
-        mutation upvotePost {
-          upvotePost(postId: ${postId}) {
-            id
-            title
-            votes
+    async preload(req) {
+      // Load data into cache
+      const client = consumer(this);
+      await Promise.all([
+        client.query({ query: GET_BOOKS }),
+        client.query({ query: GET_AUTHORS })
+      ]);
+    },
+
+    methods: {
+      addBook: mutation(ADD_BOOK, addBook => async function(event) {
+        event.preventDefault();
+        
+        const { author, title } = this.get();
+        if (!title) return;
+
+        await addBook({
+          variables: { title, author },
+          update: (cache, { data: { addBook } }) => {
+            const { books } = cache.readQuery({ query: GET_BOOKS });
+            
+            cache.writeQuery({
+              query: GET_BOOKS,
+              data: { books: books.concat([addBook]) }
+            });
           }
-        }
-      `)
-		}
-	};
+        });
+
+        this.set({ title: '' });
+      }),
+
+      addAuthor: mutation(ADD_AUTHOR, addAuthor => async function(event) {
+        event.preventDefault();
+
+        const { name } = this.get();
+        if (!name) return;
+
+        await addAuthor({
+          variables: { name },
+          update: (cache, { data: { addAuthor } }) => {
+            const { authors } = cache.readQuery({ query: GET_AUTHORS });
+
+            cache.writeQuery({
+              query: GET_AUTHORS,
+              data: { authors: authors.concat([addAuthor]) }
+            });
+          }
+        });
+
+        this.set({ name: '' });
+      }),
+
+      refetch
+    },
+
+    onstate: connect
+  }
 </script>
