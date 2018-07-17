@@ -238,46 +238,4 @@ const app = new App({
 
 ### With sapper
 
-```js
-// app/server.js
-const { Store } = require('svelte/store.js');
-const { createProvider } = require('svelte-sapper');
-
-express() // or Polka, or a similar framework
-  .use(
-    // ...
-    sapper({
-      routes,
-      store: request => {
-        const client = new ApolloClient({ /* ... */ });
-
-        return new Store({
-          graphql: createProvider(client, { ssr: true })
-        });
-      }
-    })
-  )
-  .listen(process.env.PORT);
-```
-
-```js
-import { init } from 'sapper/runtime.js';
-import { Store } from 'svelte/store.js';
-import { routes } from './manifest/client.js';
-import { createProvider } = require('svelte-sapper');
-import App from './App.html';
-
-init({
-  App,
-  target: document.querySelector('#sapper'),
-  routes, 
-  store: data => {
-    const client = new ApolloClient({ /* ... */ });
-
-    return new Store({
-      ...data,
-      graphql: createProvider(client, { from: data.graphql })
-    });
-  }
-});
-```
+In progress...

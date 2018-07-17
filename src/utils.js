@@ -1,5 +1,5 @@
 // Will likely be a Symbol in the future,
-// but currrently has issues with devalue in sapper
+// but currently has issues with devalue in sapper
 export const SVELTE_APOLLO = 'svelte-apollo';
 
 export { deferred, nonenumerable } from 'svelte-observable';
