@@ -7,10 +7,10 @@ export default {
     {
       file: 'dist/svelte-apollo.umd.js',
       format: 'umd',
-      name: 'SvelteApollo',
+      name: 'svelteApollo',
       sourcemap: true,
       globals: {
-        'svelte-observable': 'SvelteObservable'
+        'svelte-observable': 'svelteObservable'
       }
     }
   ],

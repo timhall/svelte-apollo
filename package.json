@@ -13,7 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "svelte-observable": "^0.2.1"
+    "svelte-observable": "^0.3.0"
   },
   "devDependencies": {
     "apollo-boost": "^0.1.10",

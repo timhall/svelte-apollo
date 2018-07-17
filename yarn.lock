@@ -5362,9 +5362,9 @@ svelte-loader@^2.9.0:
     loader-utils "^1.1.0"
     svelte-dev-helper "^1.1.7"
 
-svelte-observable@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/svelte-observable/-/svelte-observable-0.2.1.tgz#29bb72467c970085e43b2b53a01cb8fafc6ebbdf"
+svelte-observable@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/svelte-observable/-/svelte-observable-0.3.0.tgz#de403bcca5d645514452763d218f74a6f7b71be2"
 
 svelte@^2.9.4:
   version "2.9.4"
