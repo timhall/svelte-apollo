@@ -1,5 +1,5 @@
 import { createComponent } from './helpers';
-import mutation from '../mutation';
+import mutation from '../src/mutation';
 
 it('should call mutation with options', () => {
   const { client, component } = createComponent();

@@ -1,7 +1,7 @@
 import { SVELTE_OBSERVABLE } from 'svelte-observable';
-import { SVELTE_APOLLO } from '../utils';
+import { SVELTE_APOLLO } from '../src/utils';
 import { createComponent, createQuery } from './helpers';
-import connect from '../connect';
+import connect from '../src/connect';
 
 const changed = { a: 1 };
 

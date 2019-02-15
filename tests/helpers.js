@@ -1,4 +1,4 @@
-import { SVELTE_APOLLO } from '../utils';
+import { SVELTE_APOLLO } from '../src/utils';
 
 export function createStore(values) {
   return {

@@ -1,6 +1,6 @@
 import { createClient, isDeferred } from './helpers';
-import { SVELTE_APOLLO } from '../utils';
-import subscription from '../subscription';
+import { SVELTE_APOLLO } from '../src/utils';
+import subscription from '../src/subscription';
 
 it('should return deferred', () => {
   const value = subscription('...');

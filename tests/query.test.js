@@ -1,6 +1,6 @@
 import { createClient, isDeferred } from './helpers';
-import { SVELTE_APOLLO } from '../utils';
-import query from '../query';
+import { SVELTE_APOLLO } from '../src/utils';
+import query from '../src/query';
 
 it('should return deferred', () => {
   const value = query('...');

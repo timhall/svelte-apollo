@@ -1,5 +1,5 @@
-import { SVELTE_APOLLO } from '../utils';
-import createProvider from '../create-provider';
+import { SVELTE_APOLLO } from '../src/utils';
+import createProvider from '../src/create-provider';
 
 it('should create attach client on "internal" key', () => {
   const client = {};
