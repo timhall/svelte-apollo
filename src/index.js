@@ -1,8 +1,6 @@
-export { SVELTE_APOLLO, consumer } from './utils';
-
-export { default as createProvider } from './create-provider';
-export { default as connect } from './connect';
+export { getClient, setClient } from './context';
 export { default as query } from './query';
-export { default as mutation } from './mutation';
-export { default as subscription } from './subscription';
-export { default as refetch } from './refetch';
+export { default as prepare } from './prepare';
+export { default as mutate } from './mutate';
+export { default as subscribe } from './subscribe';
+export { default as restore } from './restore';

@@ -4,10 +4,42 @@ Svelte integration for Apollo GraphQL.
 
 ## Example
 
-```html
-<!-- App.html -->
+The following simple example shows how to run a simple query with svelte-apollo. There are more complete examples included in the [examples directory](#todo).
 
-{#await books}
+```html
+<!-- App.svelte -->
+<Books />
+
+<script>
+  import 
+  import Books from './Books.svelte';
+
+  import ApolloClient from 'apollo-boost';  
+  import { setClient } from 'svelte-apollo';
+
+  // 1. Create an Apollo client and pass it to all child components
+  //    (uses svelte's built-in context)
+  const client = new ApolloClient({ uri: '...' });
+  setClient(client);
+</script>
+```
+
+```html
+<!-- Books.svelte -->
+<script>
+  import { getClient, query } from 'svelte-apollo'; 
+  import { GET_BOOKS } from './queries';
+
+  // 2. Get the Apollo client from context
+  const client = getClient();
+
+  // 3. Execute the GET_BOOKS graphql query using the Apollo client
+  //    -> Returns a svelte store of promises that resolve as values come in
+  const books = query(client, { query: GET_BOOKS });
+</script>
+
+<!-- 4. Use $books (note the "$"), to subscribe to query values -->
+{#await $books}
   Loading...
 {:then result}
   {#each result.data.books as book}
@@ -16,224 +48,213 @@ Svelte integration for Apollo GraphQL.
 {:catch error}
   Error: {error}
 {/await}
+```
 
-<form on:submit="create()">
-  <h2>New Book<h2>
+## API
 
-  <label for="title">Title</label>
-  <input type="text" id="title" bind:value=title />
+<a href="#query" name="query">#</a> <b>query</b>(<i>client</i>, <i>options</i>)
+
+Query an Apollo client, returning a store that is compatible with `{#await $...}`.
+Uses Apollo's [`watchQuery`](https://www.apollographql.com/docs/react/api/apollo-client.html#ApolloClient.watchQuery),
+for fetching from the network and watching the local cache for changes.
+If the client is hydrating after SSR, it attempts a `readQuery` to synchronously check the cache for values.
+
+```html
+<script>
+  import { getClient, query } from 'svelte-apollo';
+  import { GET_BOOKS } from './queries';
+
+  const client = getClient();
+  const books = query(client, {
+    query: GET_BOOKS
+
+    // variables, fetchPolicy, errorPolicy, and others
+  });
+
+  function reload() {
+    books.refetch();
+  }
+</script>
+
+<ul>
+  {#await $books}
+    <li>Loading...</li>
+  {:then result}
+    {#each result.data.books as book (book.id)}
+      <li>{book.title} by {book.author.name}</li>
+    {/each}
+  {:catch error}
+    <li>ERROR: {error}</li>
+  {/await}
+</ul>
+
+<button on:click={reload}>Reload</button>
+```
+
+Note, stores in svelte should be constant and at the top level.
+If your query depends on reactive variables, [`prepare`](#prepare) is a better option
+for efficiently refetching queries as variables change.
+
+<a href="#prepare" name="prepare">#</a> <b>prepare</b>(<i>client</i>, <i>options</i>)
+
+Prepare behaves almost exactly like `query`, except that it waits until the first `refetch`
+to execute the query with the given variables. This is very useful with svelte's reactive declarations.
+
+```html
+<script>
+  import { getClient, prepare } from 'svelte-apollo';
+  import { SEARCH_BY_AUTHOR } from './queries';
+
+  export let author;
+  let search = '';
+
+  const client = getClient();
   
-  <label for="author">Author</label> 
-  <input type="text" id="author" bind:value=author />
+  // The books query isn't executed until variables are given via refetch
+  // allowing svelte's reactive declarations to be used for variables
+  const books = prepare(client, {
+    query: SEARCH_BY_AUTHOR
+  });
 
-  <button type="submit">Add Book</button>
-</form>
-
-<script>
-  import { query, mutation, connect } from 'svelte-apollo'; 
-  import { GET_BOOKS, ADD_BOOK } from './queries';
-
-  export default {
-    data() {
-      return {
-        books: query(GET_BOOKS),
-        title: '',
-        author: ''
-      };
-    },
-
-    methods: {
-      create: mutation(ADD_BOOK, addBook => function() {
-        //                       ^ a        ^ b
-        //
-        // a: called with the generated mutation and returns method
-        // b: called with method arguments
-        //
-        // Warning: (b) should be a function expression, not an arrow function,
-        //          if you need to access the component with `this`
-        const { title, author } = this.get();
-        if (!title || !author) return;
-
-        addBook({ variables: { title, author } });
-      })
-    },
-
-    onstate: connect,
-    //       ^ Connect component queries / mutations with Apollo provider
-  }
+  // `books` is refetched with initial values and when author or search change
+  $: books.refetch({ author, search });
 </script>
+
+Author: {author}
+<label>Search <input type="text" bind:value={search} /></label>
+
+<ul>
+  {#await $books}
+    <li>Loading...</li>
+  {:then result}
+    {#each result.data.books as book (book.id)}
+      <li>{book.title}</li>
+    {:else}
+      <li>No books found</li>
+    {/each}
+  {/await}
+</ul>
 ```
 
-```js
-// main.js
+<a href="#mutate" name="mutate">#</a> <b>mutate</b>(<i>client</i>, <i>options</i>)
 
-import { Store } from 'svelte/store';
-import App from './App.html';
-
-import ApolloClient from 'apollo-boost';
-import { createProvider } from 'svelte-apollo';
-
-const client = new ApolloClient({ uri: '...' });
-const graphql = createProvider(client);
-const store = new Store({ graphql });
-
-const app = new App({
-  target: document.body,
-  store
-});
-```
-
-## query
-
-Query an attached Apollo provider, returning an observable that is compatible with `{#await ...}`.
-svelte-apollo handles subscriptions internally and it is safe to use `query` in computed properties.
+Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](https://www.apollographql.com/docs/react/api/apollo-client.html#ApolloClient.mutate).
 
 ```html
 <script>
-  import { query } from 'svelte-apollo';
-  import { GET_BOOKS, SEARCH_BOOKS } from './queries';
+  import { getClient, mutate } from 'svelte-apollo';
+  import { ADD_BOOK } from './queries';
 
-  export default {
-    data() {
-      return {
-        // static query
-        list: query(GET_BOOKS),
-        search: ''
-      };
-    },
+  const client = getClient();
+  let title = '';
+  let author = '';
+  let adding = false;
 
-    computed: {
-      // dynamic query
-      results: ({ search }) => query(SEARCH_BOOKS, { variables: { search } })
-    }
-  }
-```
+  async function addBook() {
+    if (title === '' || author === '') return;
 
-## mutation
+    adding = true;
 
-Mutations are designed to be performed in methods, can take arguments and component state
-add pass them as variables to the mutation, and perform other tasks before executing the mutation, such as validation.
-
-```html
-<button on:click=simple()>Simple</button>
-<button on:click=complex("svelte")>Complex</button>
-
-<script>
-  import { mutation } from 'svelte-apollo';
-  import { SIMPLE, SEARCH_BOOKS } from './queries';
-
-  export default {
-    data() {
-      return {
-        author: ''
-      }
-    },
-
-    methods: {
-      simple: mutation(SIMPLE),
-      complex: mutation(SEARCH_BOOKS, searchBooks => function(search) {
-        const { author } = this.get();
-        searchBooks({ variables: { author, search } });
+    try {
+      await mutate(client, {
+        mutation: ADD_BOOK,
+        variables: { title, author }
       });
+
+      title = '';
+      author = '';
+    } catch(error) {
+      // TODO
+    } finally {
+      adding = false;
     }
   }
 </script>
+
+<form on:submit={addBook}>
+  <label for="book-author">Author</label>
+  <input type="text" id="book-author" bind:value={author} />
+
+  <label for="book-title">Title</label>
+  <input type="text" id="book-title" bind:value={title} />
+
+  <button type="submit" disabled={adding}>Add Book</button>
+</form>
 ```
 
-## subscription
-
-`subscription` allows you to subscribe to new values directly in your component.
+<a href="#subscribe" name="subscribe">#</a> <b>subscribe</b>(<i>client</i>, <i>options</i>)
 
 ```html
-{#await new_books}
+<script>
+  import { getClient, subscribe } from 'svelte-apollo';
+  import { NEW_BOOKS } from './queries';
+
+  const client = getClient();
+  const new_books = subscribe(client, {
+    query: NEW_BOOKS
+  });
+</script>
+
+{#await $new_books}
   Waiting for new books...
 {:then result}
   New Book: {result.data.book}
 {/await}
-
-<script>
-  import { subscription } from 'svelte-apollo';
-  import { NEW_BOOKS } from './queries';
-
-  export default {
-    data() {
-      return {
-        new_books: subscription(NEW_BOOKS)
-      };
-    }
-
-    // subscription also works in computed
-  }
-</script>
 ```
 
-## refetch
-
-Explicitly refetch a query with the `refetch` method.
+<a href="#restore" name="restore">#</a> <b>restore</b>(<i>client</i>, <i>values</i>)
 
 ```html
-<button on:click=refetch(books)>Reload Books</button>
+<script context="module">
+  import client from './client';
+  import gql from 'graphql-tag';
+
+  export async function preload {
+    return {
+      preloaded: await client.query({
+        query: gql`
+          ...
+        `
+      })
+    };
+  }
+</script>
 
 <script>
-  import { query, refetch } from 'svelte-apollo';
-  import { GET_BOOKS } from './queries';
+  import { restore } from 'svelte-apollo';
 
-  export default {
-    data() {
-      return {
-        books: query(GET_BOOKS)
-      }
-    },
+  export let preloaded;
 
-    methods: {
-      refetch
-    }
-  }
+  // Load preloaded values into client's cache
+  restore(client, preloaded);
 </script>
 ```
 
-## connect
+<a href="#getClient" name="getClient">#</a> <b>getClient</b>()
 
-Connect is essential for connecting queries and mutations in the component to the Apollo provider.
-Once connected, svelte-apollo handles subscriptions and properly unsubscribes when the component is destroyed.
+Get an Apollo client from the current component's context.
 
 ```html
+<!-- Child.svelte -->
 <script>
-  import { connect } from 'svelte-apollo';
+  import { getClient } from 'svelte-apollo';
 
-  export default {
-    onstate: connect,
-
-    // or
-
-    onstate({ changed, current }) {
-      // ...
-
-      connect.call(this, { changed, current });
-    }
-  }
+  const client = getClient();
 </script>
 ```
 
-## createProvider
+<a href="#setClient" name="setClient">#</a> <b>setClient</b>(<i>setClient</i>)
 
-The Apollo provider is passed through the application's `sveltejs/store` so that it is available in all components without having to explicitly pass it to each one.
+Set an Apollo client for the current component's and all child components' contexts.
 
-```js
-import { Store } from 'svelte/store';
-import App from './App.html';
+```html
+<!-- Parent.svelte -->
+<script>
+  import { setClient } from 'svelte-apollo';
+  import client from './client';
 
-import ApolloClient from 'apollo-boost';
-import { createProvider } from 'svelte-apollo';
-
-const client = new ApolloClient({ uri: '...' });
-const graphql = createProvider(client);
-const store = new Store({ graphql });
-
-const app = new App({
-  target: document.body,
-  store
-});
+  setClient(client);
+</script>
 ```
 
 ### With sapper
