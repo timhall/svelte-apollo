@@ -1,3 +1,6 @@
+import { observe } from 'svelte-observable';
+
 export default function subscribe(client, options) {
-  // TODO
+  const observable = client.subscribe(options);
+  return observe(observable);
 }

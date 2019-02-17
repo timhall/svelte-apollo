@@ -1,3 +1,3 @@
 export default function mutate(client, options) {
-  // TODO
+  return client.mutate(options);
 }

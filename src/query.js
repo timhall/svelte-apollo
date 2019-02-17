@@ -1,8 +1,11 @@
 import { observe } from 'svelte-observable';
+import { restoring } from './restore';
 
-export default function query(client, options = {}) {
+export default function query(client, options) {
+  // If client is restoring (e.g. from SSR)
+  // attempt synchronous readQuery first (to prevent loading in {#await})
   let initial_value;
-  if (client.hydrate) {
+  if (restoring.has(client)) {
     try {
       // undefined = skip initial value (not in cache)
       initial_value = client.readQuery(options) || undefined;
