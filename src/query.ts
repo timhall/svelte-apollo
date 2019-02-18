@@ -5,12 +5,9 @@ import ApolloClient, {
   WatchQueryOptions
 } from 'apollo-client';
 import { ApolloQueryResult } from 'apollo-client/core/types';
+import { Deferred, Next, Unsubscribe } from './types';
 
-export type Deferred<T> = T | Promise<T>;
-export type Next<T> = (value: T) => void;
-export type Unsubscribe = () => void;
-
-export interface QueryStore<TData> {
+export interface QueryStore<TData = any> {
   subscribe: (
     subscription: Next<Deferred<ApolloQueryResult<TData>>>
   ) => Unsubscribe;
@@ -29,7 +26,7 @@ export interface QueryStore<TData> {
   subscribeToMore: ObservableQuery['subscribeToMore'];
 }
 
-export default function query<TData, TCache, TVariables>(
+export default function query<TData = any, TCache = any, TVariables = any>(
   client: ApolloClient<TCache>,
   options: WatchQueryOptions<TVariables>
 ): QueryStore<TData> {

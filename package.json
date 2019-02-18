@@ -6,6 +6,7 @@
   "repository": "https://github.com/timhall/svelte-apollo.git",
   "main": "dist/svelte-apollo.cjs.js",
   "module": "dist/svelte-apollo.es.js",
+  "types": "dist/svelte-apollo.d.ts",
   "keywords": [
     "svelte",
     "apollo",
@@ -33,6 +34,7 @@
     "jest": "^24.1.0",
     "rollup": "^1.0.0",
     "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-dts": "^0.12.0",
     "rollup-plugin-filesize": "^5.0.1",
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-typescript": "^1.0.0",

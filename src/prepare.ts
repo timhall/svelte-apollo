@@ -7,7 +7,7 @@ type Unsubscribe = () => void;
 type Deferred<T> = T | Promise<T>;
 type Next<T> = (value: Deferred<ApolloQueryResult<T>>) => void;
 
-export default function prepare<TData, TCache, TVariables>(
+export default function prepare<TData = any, TCache = any, TVariables = any>(
   client: ApolloClient<TCache>,
   options: WatchQueryOptions<TVariables>
 ): QueryStore<TData> {

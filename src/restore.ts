@@ -8,7 +8,7 @@ export type Restoring<TCache> =
 export const restoring: Restoring<any> =
   typeof WeakSet !== 'undefined' ? new WeakSet() : new Set();
 
-export default function restore<TCache>(
+export default function restore<TCache = any>(
   client: ApolloClient<TCache>,
   query: any
 ): void {
