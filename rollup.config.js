@@ -1,8 +1,8 @@
-import buble from 'rollup-plugin-buble';
+import typescript from 'rollup-plugin-typescript';
 import filesize from 'rollup-plugin-filesize';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   external: ['svelte', 'svelte/store', 'svelte-observable'],
   output: [
     {
@@ -16,5 +16,5 @@ export default {
       sourcemap: true
     }
   ],
-  plugins: [buble(), filesize()]
+  plugins: [typescript(), filesize()]
 };
