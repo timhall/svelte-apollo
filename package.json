@@ -19,7 +19,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "svelte-observable": "^0.4.0-alpha.3"
+    "svelte-observable": "^0.4.0-beta.1"
   },
   "peerDependencies": {
     "apollo-client": "^2.4.12",
@@ -44,7 +44,6 @@
     "testEnvironment": "node"
   },
   "files": [
-    "src",
     "dist"
   ]
 }

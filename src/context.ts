@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import ApolloClient from 'apollo-client';
 
-const CLIENT = typeof Symbol !== 'undefined' ? Symbol('client') : '__client__';
+const CLIENT = typeof Symbol !== 'undefined' ? Symbol('client') : '@@client';
 
 export function getClient<TCache>(): ApolloClient<TCache> | undefined {
   return getContext(CLIENT);

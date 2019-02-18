@@ -6,10 +6,14 @@ import ApolloClient, {
 } from 'apollo-client';
 import { ApolloQueryResult } from 'apollo-client/core/types';
 
+export type Deferred<T> = T | Promise<T>;
+export type Next<T> = (value: T) => void;
+export type Unsubscribe = () => void;
+
 export interface QueryStore<TData> {
   subscribe: (
-    subscription: (value: ApolloQueryResult<TData>) => void
-  ) => () => void;
+    subscription: Next<Deferred<ApolloQueryResult<TData>>>
+  ) => Unsubscribe;
 
   refetch: ObservableQuery['refetch'];
   result: ObservableQuery['result'];
@@ -27,7 +31,7 @@ export default function query<TData, TCache, TVariables>(
 ): QueryStore<TData> {
   // If client is restoring (e.g. from SSR)
   // attempt synchronous readQuery first (to prevent loading in {#await})
-  let initial_value: TData | undefined;
+  let initial_value: ApolloQueryResult<TData> | undefined;
   if (restoring.has(client)) {
     try {
       // undefined = skip initial value (not in cache)
@@ -38,7 +42,10 @@ export default function query<TData, TCache, TVariables>(
   }
 
   const observable_query = client.watchQuery<TData>(options);
-  const { subscribe } = observe(observable_query, initial_value);
+  const { subscribe } = observe<ApolloQueryResult<TData>>(
+    observable_query,
+    initial_value
+  );
 
   // Most likely extension from ObservableQuery needed
   const refetch = variables => observable_query.refetch(variables);
