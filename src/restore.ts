@@ -1,3 +1,4 @@
+import { onMount } from 'svelte';
 import ApolloClient from 'apollo-client';
 
 export type Restoring<TCache> =
@@ -9,9 +10,24 @@ export const restoring: Restoring<any> =
 
 export default function restore<TCache>(
   client: ApolloClient<TCache>,
-  values: any
+  query: any
 ): void {
-  // TODO
-  // restoring.add(client);
-  // nextTick/onMount -> restoring.delete(client);
+  restoring.add(client);
+  afterHydrate(() => {
+    restoring.delete(client);
+  });
+
+  client.writeQuery(query);
+}
+
+function afterHydrate(callback: () => void): void {
+  // Attempt to wait for onMount (hydration of current component is complete),
+  // but if that fails (e.g. outside of component initialization)
+  // wait for next event loop for hydrate to complete
+
+  try {
+    onMount(callback);
+  } catch (_error) {
+    setTimeout(callback, 1);
+  }
 }
