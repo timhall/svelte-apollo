@@ -15,7 +15,11 @@ export interface QueryStore<TData> {
     subscription: Next<Deferred<ApolloQueryResult<TData>>>
   ) => Unsubscribe;
 
+  // Most likely extension from ObservableQuery needed
   refetch: ObservableQuery['refetch'];
+
+  // Rest included for completeness
+  // (except for setVariables, marked internal use only)
   result: ObservableQuery['result'];
   fetchMore: ObservableQuery['fetchMore'];
   setOptions: ObservableQuery['setOptions'];
@@ -47,29 +51,15 @@ export default function query<TData, TCache, TVariables>(
     initial_value
   );
 
-  // Most likely extension from ObservableQuery needed
-  const refetch = variables => observable_query.refetch(variables);
-
-  // Rest included for completeness
-  // (except for setVariables, marked internal use only)
-
-  const result = () => observable_query.result();
-  const fetchMore = options => observable_query.fetchMore(options);
-  const setOptions = options => observable_query.setOptions(options);
-  const updateQuery = map => observable_query.updateQuery(map);
-  const startPolling = interval => observable_query.startPolling(interval);
-  const stopPolling = () => observable_query.stopPolling();
-  const subscribeToMore = options => observable_query.subscribeToMore(options);
-
   return {
     subscribe,
-    refetch,
-    result,
-    fetchMore,
-    setOptions,
-    updateQuery,
-    startPolling,
-    stopPolling,
-    subscribeToMore
+    refetch: variables => observable_query.refetch(variables),
+    result: () => observable_query.result(),
+    fetchMore: options => observable_query.fetchMore(options),
+    setOptions: options => observable_query.setOptions(options),
+    updateQuery: map => observable_query.updateQuery(map),
+    startPolling: interval => observable_query.startPolling(interval),
+    stopPolling: () => observable_query.stopPolling(),
+    subscribeToMore: options => observable_query.subscribeToMore(options)
   };
 }
