@@ -49,24 +49,21 @@ export class MockClient<TCache> extends ApolloClient<TCache> {
 type Next<T> = (value: T) => void;
 export type Deferred<T> = T | Promise<T>;
 
-export async function read<T>(
-  store: ReadableStore<Deferred<T>>,
-  take = 1
-): Promise<T[]> {
-  const values: Deferred<T>[] = [];
-  let push: Next<Deferred<T>> | undefined;
+export async function read<T>(store: ReadableStore<T>, take = 1): Promise<T[]> {
+  const values: T[] = [];
+  let push: Next<T> | undefined;
 
   const done = new Promise(resolve => {
-    push = (value: Deferred<T>) => {
-      console.log('push', value);
+    push = (value: T) => {
       values.push(value);
       if (values.length >= take) resolve();
     };
   });
 
   const unsubscribe = store.subscribe(push!);
-  await done;
 
+  await done;
   unsubscribe();
-  return Promise.all(values);
+
+  return values.slice(0, take);
 }
