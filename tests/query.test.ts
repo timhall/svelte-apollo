@@ -51,7 +51,7 @@ describe('restore', () => {
     expect(mock(client.readQuery)).lastCalledWith(options);
   });
 
-  it.only('should have initial synchronous value from readQuery', async () => {
+  it('should have initial synchronous value from readQuery', async () => {
     const result = {
       data: { name: 'Tim' }
     };
@@ -69,7 +69,28 @@ describe('restore', () => {
     const store = query(client, options);
     const values = await read(store);
 
-    expect(values).toEqual([{ data: { name: 'Tim' } }]);
+    expect(values[0]).toEqual(result);
+  });
+
+  it.skip('should not have duplicate value when using readQuery', async () => {
+    const result = {
+      data: { name: 'Tim' }
+    };
+    const client = new MockClient({
+      readQuery: () => {
+        return result;
+      },
+      watchQuery: () => {
+        return Observable.of(result);
+      }
+    });
+    restoring.add(client);
+
+    const options = { query: {} };
+    const store = query(client, options);
+    const values = await read(store, 2);
+
+    expect(values.length).toBe(1);
   });
 
   it('should swallow errors from readQuery', () => {
