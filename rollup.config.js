@@ -25,7 +25,6 @@ export default [
     external: [
       'graphql',
       'apollo-client',
-      'apollo-client/core/types',
       'svelte',
       'svelte/store',
       'svelte-observable'

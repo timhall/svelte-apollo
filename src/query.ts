@@ -2,9 +2,9 @@ import { observe } from 'svelte-observable';
 import { restoring } from './restore';
 import ApolloClient, {
   ObservableQuery,
-  WatchQueryOptions
+  WatchQueryOptions,
+  ApolloQueryResult
 } from 'apollo-client';
-import { ApolloQueryResult } from 'apollo-client/core/types';
 import { Deferred, Next, Unsubscribe } from './types';
 
 export interface QueryStore<TData = any> {

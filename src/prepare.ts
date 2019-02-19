@@ -1,7 +1,9 @@
 import { readable } from 'svelte/store';
 import query, { QueryStore } from './query';
-import ApolloClient, { WatchQueryOptions } from 'apollo-client';
-import { ApolloQueryResult } from 'apollo-client/core/types';
+import ApolloClient, {
+  WatchQueryOptions,
+  ApolloQueryResult
+} from 'apollo-client';
 
 type Unsubscribe = () => void;
 type Deferred<T> = T | Promise<T>;
