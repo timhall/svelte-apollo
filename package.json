@@ -43,7 +43,7 @@
     "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-typescript": "^1.0.0",
     "svelte": "^3.0.0-beta.3",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^24.0.0",
     "tslib": "^1.9.3",
     "typescript": "^3.3.3"
   },
