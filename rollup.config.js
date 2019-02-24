@@ -1,23 +1,38 @@
+import typescript from 'rollup-plugin-typescript';
+import dts from 'rollup-plugin-dts';
 import filesize from 'rollup-plugin-filesize';
-import buble from 'rollup-plugin-buble';
 
-export default {
-  input: 'src/index.js',
-  output: [
-    {
-      file: 'dist/svelte-apollo.umd.js',
-      format: 'umd',
-      name: 'svelteApollo',
-      sourcemap: true,
-      globals: {
-        'svelte-observable': 'svelteObservable'
+export default [
+  {
+    input: 'src/index.ts',
+    external: ['svelte', 'svelte/store', 'svelte-observable'],
+    output: [
+      {
+        file: 'dist/svelte-apollo.es.js',
+        format: 'es',
+        sourcemap: true
+      },
+      {
+        file: 'dist/svelte-apollo.cjs.js',
+        format: 'cjs',
+        sourcemap: true
       }
-    }
-  ],
-  external: ['svelte-observable'],
-  plugins: [filesize(), buble()],
-
-  watch: {
-    chokidar: true
+    ],
+    plugins: [typescript(), filesize()]
+  },
+  {
+    input: 'src/index.ts',
+    external: [
+      'graphql',
+      'apollo-client',
+      'svelte',
+      'svelte/store',
+      'svelte-observable'
+    ],
+    output: {
+      file: 'dist/svelte-apollo.d.ts',
+      format: 'es'
+    },
+    plugins: [dts()]
   }
-};
+];
