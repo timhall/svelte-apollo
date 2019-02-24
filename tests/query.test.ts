@@ -72,7 +72,7 @@ describe('restore', () => {
     expect(values[0]).toEqual(result);
   });
 
-  it.skip('should not have duplicate value when using readQuery', async () => {
+  it('should not have duplicate value when using readQuery', async () => {
     const result = {
       data: { name: 'Tim' }
     };

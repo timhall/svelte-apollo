@@ -1,3 +1,4 @@
+import { readable } from 'svelte/store';
 import { observe } from 'svelte-observable';
 import { restoring } from './restore';
 import ApolloClient, {
@@ -43,10 +44,27 @@ export default function query<TData = any, TCache = any, TVariables = any>(
   }
 
   const observable_query = client.watchQuery<TData>(options);
-  const { subscribe } = observe<ApolloQueryResult<TData>>(
+  const { subscribe: subscribe_to_query } = observe<ApolloQueryResult<TData>>(
     observable_query,
     initial_value
   );
+
+  const { subscribe } = readable<Deferred<ApolloQueryResult<TData>>>(set => {
+    const skip_duplicate = initial_value !== undefined;
+    let initialized = false;
+    let skipped = false;
+
+    const unsubscribe = subscribe_to_query(value => {
+      if (skip_duplicate && initialized && !skipped) {
+        skipped = true;
+      } else {
+        if (!initialized) initialized = true;
+        set(value);
+      }
+    });
+
+    return unsubscribe;
+  });
 
   return {
     subscribe,
