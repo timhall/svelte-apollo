@@ -20,7 +20,7 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "svelte-observable": "^0.4.0-beta.1"
+    "svelte-observable": "^0.4.0-beta.2"
   },
   "peerDependencies": {
     "apollo-client": "^2.4.12",
