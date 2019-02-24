@@ -176,9 +176,7 @@ Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](htt
   import { NEW_BOOKS } from './queries';
 
   const client = getClient();
-  const new_books = subscribe(client, {
-    query: NEW_BOOKS
-  });
+  const new_books = subscribe(client, { query: NEW_BOOKS });
 </script>
 
 {#await $new_books}
