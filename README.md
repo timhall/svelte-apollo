@@ -110,9 +110,7 @@ to execute the query with the given variables. This is very useful with svelte's
   
   // The books query isn't executed until variables are given via refetch
   // allowing svelte's reactive declarations to be used for variables
-  const books = prepare(client, {
-    query: SEARCH_BY_AUTHOR
-  });
+  const books = prepare(client, { query: SEARCH_BY_AUTHOR });
 
   // `books` is fetched with initial values and then refetched when author or search change
   $: books.refetch({ author, search });
@@ -146,25 +144,15 @@ Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](htt
   const client = getClient();
   let title = '';
   let author = '';
-  let adding = false;
 
   async function addBook() {
-    if (title === '' || author === '') return;
-
-    adding = true;
-
     try {
       await mutate(client, {
         mutation: ADD_BOOK,
         variables: { title, author }
       });
-
-      title = '';
-      author = '';
     } catch(error) {
       // TODO
-    } finally {
-      adding = false;
     }
   }
 </script>
@@ -176,7 +164,7 @@ Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](htt
   <label for="book-title">Title</label>
   <input type="text" id="book-title" bind:value={title} />
 
-  <button type="submit" disabled={adding}>Add Book</button>
+  <button type="submit">Add Book</button>
 </form>
 ```
 
