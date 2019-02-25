@@ -2,10 +2,19 @@ import typescript from 'rollup-plugin-typescript';
 import dts from 'rollup-plugin-dts';
 import filesize from 'rollup-plugin-filesize';
 
+const external = [
+  'graphql',
+  'apollo-client',
+  'apollo-utilities',
+  'svelte',
+  'svelte/store',
+  'svelte-observable'
+];
+
 export default [
   {
     input: 'src/index.ts',
-    external: ['svelte', 'svelte/store', 'svelte-observable'],
+    external,
     output: [
       {
         file: 'dist/svelte-apollo.es.js',
@@ -22,13 +31,7 @@ export default [
   },
   {
     input: 'src/index.ts',
-    external: [
-      'graphql',
-      'apollo-client',
-      'svelte',
-      'svelte/store',
-      'svelte-observable'
-    ],
+    external,
     output: {
       file: 'dist/svelte-apollo.d.ts',
       format: 'es'

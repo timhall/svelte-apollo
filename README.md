@@ -89,18 +89,11 @@ If the client is hydrating after SSR, it attempts a `readQuery` to synchronously
 <button on:click={reload}>Reload</button>
 ```
 
-Note, stores in svelte should be constant and at the top level.
-If your query depends on reactive variables, [`prepare`](#prepare) is a better option
-for efficiently refetching queries as variables change.
-
-<a href="#prepare" name="prepare">#</a> <b>prepare</b>(<i>client</i>, <i>options</i>)
-
-Prepare behaves almost exactly like `query`, except that it waits until the first `refetch`
-to execute the query with the given variables. This is very useful with svelte's reactive declarations.
+Reactive variables are supported with `refetch`:
 
 ```html
 <script>
-  import { getClient, prepare } from 'svelte-apollo';
+  import { getClient, query } from 'svelte-apollo';
   import { SEARCH_BY_AUTHOR } from './queries';
 
   export let author;
@@ -110,9 +103,12 @@ to execute the query with the given variables. This is very useful with svelte's
   
   // The books query isn't executed until variables are given via refetch
   // allowing svelte's reactive declarations to be used for variables
-  const books = prepare(client, { query: SEARCH_BY_AUTHOR });
+  const books = query(client, {
+    query: SEARCH_BY_AUTHOR,
+    variables: { author, search }
+  });
 
-  // `books` is fetched with initial values and then refetched when author or search change
+  // `books` is refetched when author or search change
   $: books.refetch({ author, search });
 </script>
 

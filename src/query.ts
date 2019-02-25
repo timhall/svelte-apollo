@@ -1,3 +1,4 @@
+import { isEqual } from 'apollo-utilities';
 import { readable } from 'svelte/store';
 import { observe } from 'svelte-observable';
 import { restoring } from './restore';
@@ -31,9 +32,14 @@ export default function query<TData = any, TCache = any, TVariables = any>(
   client: ApolloClient<TCache>,
   options: WatchQueryOptions<TVariables>
 ): QueryStore<TData> {
+  type Value = ApolloQueryResult<TData>;
+
+  let subscribed = false;
+  let initial_value: Value | undefined;
+
   // If client is restoring (e.g. from SSR)
   // attempt synchronous readQuery first (to prevent loading in {#await})
-  let initial_value: ApolloQueryResult<TData> | undefined;
+
   if (restoring.has(client)) {
     try {
       // undefined = skip initial value (not in cache)
@@ -44,12 +50,14 @@ export default function query<TData = any, TCache = any, TVariables = any>(
   }
 
   const observable_query = client.watchQuery<TData>(options);
-  const { subscribe: subscribe_to_query } = observe<ApolloQueryResult<TData>>(
+  const { subscribe: subscribe_to_query } = observe<Value>(
     observable_query,
     initial_value
   );
 
-  const { subscribe } = readable<Deferred<ApolloQueryResult<TData>>>(set => {
+  const { subscribe } = readable<Deferred<Value>>(set => {
+    subscribed = true;
+
     const skip_duplicate = initial_value !== undefined;
     let initialized = false;
     let skipped = false;
@@ -68,7 +76,13 @@ export default function query<TData = any, TCache = any, TVariables = any>(
 
   return {
     subscribe,
-    refetch: variables => observable_query.refetch(variables),
+    refetch: variables => {
+      // If variables have not changed and not subscribed, skip refetch
+      if (!subscribed && isEqual(variables, observable_query.variables))
+        return observable_query.result();
+
+      return observable_query.refetch(variables);
+    },
     result: () => observable_query.result(),
     fetchMore: options => observable_query.fetchMore(options),
     setOptions: options => observable_query.setOptions(options),
