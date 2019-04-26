@@ -12,7 +12,7 @@ it('should call client mutate', async () => {
     }
   });
   const options = { mutation: {} };
-  const result = await mutate(client, options);
+  const result = await mutate(client, options as any);
 
   expect(mock(client.mutate)).toBeCalled();
   expect(mock(client.mutate)).lastCalledWith(options);

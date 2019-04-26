@@ -10,7 +10,7 @@ it('should export query', () => {
 it('should call watchQuery with options', () => {
   const client = new MockClient();
   const options = { query: {} };
-  const store = query(client, options);
+  const store = query(client, options as any);
 
   expect(mock(client.watchQuery)).toBeCalled();
   expect(mock(client.watchQuery)).lastCalledWith(options);
@@ -19,7 +19,7 @@ it('should call watchQuery with options', () => {
 it('should expose ObservableQuery functions', () => {
   const client = new MockClient();
   const options = { query: {} };
-  const store = query(client, options);
+  const store = query(client, options as any);
 
   expect(typeof store.refetch).toBe('function');
   expect(typeof store.result).toBe('function');
@@ -35,7 +35,7 @@ describe('restore', () => {
   it('should not attempt readQuery if not restoring', () => {
     const client = new MockClient();
     const options = { query: {} };
-    const store = query(client, options);
+    const store = query(client, options as any);
 
     expect(mock(client.readQuery)).not.toBeCalled();
   });
@@ -45,7 +45,7 @@ describe('restore', () => {
     restoring.add(client);
 
     const options = { query: {} };
-    const store = query(client, options);
+    const store = query(client, options as any);
 
     expect(mock(client.readQuery)).toBeCalled();
     expect(mock(client.readQuery)).lastCalledWith(options);
@@ -57,7 +57,7 @@ describe('restore', () => {
     };
     const client = new MockClient({
       readQuery() {
-        return result;
+        return result.data;
       },
       watchQuery() {
         return Observable.of(result);
@@ -66,7 +66,7 @@ describe('restore', () => {
     restoring.add(client);
 
     const options = { query: {} };
-    const store = query(client, options);
+    const store = query(client, options as any);
     const values = await read(store);
 
     expect(values[0]).toEqual(result);
@@ -87,7 +87,7 @@ describe('restore', () => {
     restoring.add(client);
 
     const options = { query: {} };
-    const store = query(client, options);
+    const store = query(client, options as any);
     const values = await read(store, 2);
 
     expect(values.length).toBe(1);
@@ -102,7 +102,7 @@ describe('restore', () => {
     restoring.add(client);
 
     const options = { query: {} };
-    const store = query(client, options);
+    const store = query(client, options as any);
 
     expect(mock(client.readQuery)).toBeCalled();
     expect(mock(client.readQuery)).lastCalledWith(options);
