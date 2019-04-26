@@ -166,6 +166,8 @@ Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](htt
 
 <a href="#subscribe" name="subscribe">#</a> <b>subscribe</b>(<i>client</i>, <i>options</i>)
 
+Subscribe using an Apollo client, returning a store that is compatible with `{#await $...}`. Uses Apollo's [`subscribe`](https://www.apollographql.com/docs/react/api/apollo-client#ApolloClient.subscribe). 
+
 ```html
 <script>
   import { getClient, subscribe } from 'svelte-apollo';
@@ -183,6 +185,8 @@ Execute a graphql mutation with the Apollo client, using Apollo's [`mutate`](htt
 ```
 
 <a href="#restore" name="restore">#</a> <b>restore</b>(<i>client</i>, <i>values</i>)
+
+Restore a previously executed query (e.g. via preload) into the Apollo cache.
 
 ```html
 <script context="module">
@@ -236,6 +240,8 @@ Get an Apollo client from the current component's context.
   const client = getClient();
 </script>
 ```
+
+Note: `setClient` and `getClient` are fairly minimal wrappers for svelte's built-in context. If you need access to multiple clients, you can define them using [`getContext`](https://svelte.dev/docs#getContext) /[`setContext`](https://svelte.dev/docs#setContext) from svelte.
 
 ## Sapper / SSR
 
