@@ -13,7 +13,7 @@ it('should observe subscription', async () => {
     }
   });
   const options = { query: {} };
-  const store = subscribe(client, options);
+  const store = subscribe(client, options as any);
 
   expect(mock(client.subscribe)).toBeCalled();
   expect(mock(client.subscribe)).lastCalledWith(options);

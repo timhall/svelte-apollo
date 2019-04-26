@@ -6,9 +6,11 @@ const external = [
   'graphql',
   'apollo-client',
   'apollo-utilities',
+  'apollo-link',
   'svelte',
   'svelte/store',
-  'svelte-observable'
+  'svelte-observable',
+  'zen-observable'
 ];
 
 export default [

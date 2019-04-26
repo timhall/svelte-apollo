@@ -15,5 +15,5 @@ declare module 'svelte/store' {
     subscribe(subscription: Next<T>): Unsubscribe;
   }
 
-  export function readable<T>(start: Start<T>, initial?: T): ReadableStore<T>;
+  export function readable<T>(initial: T, start: Start<T>): ReadableStore<T>;
 }

@@ -2,7 +2,6 @@ import ApolloClient, { ApolloClientOptions } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { withClientState } from 'apollo-link-state';
-import { ReadableStore } from 'svelte/store';
 import { Next } from '../src/types';
 
 export interface MockOptions {
@@ -47,11 +46,7 @@ export class MockClient<TCache> extends ApolloClient<TCache> {
   }
 }
 
-export async function read<T>(
-  store: ReadableStore<T>,
-  take = 1,
-  wait = 10
-): Promise<T[]> {
+export async function read<T>(store: any, take = 1, wait = 10): Promise<T[]> {
   const values: T[] = [];
   let push: Next<T> | undefined;
 

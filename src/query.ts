@@ -39,40 +39,46 @@ export default function query<TData = any, TCache = any, TVariables = any>(
 
   // If client is restoring (e.g. from SSR)
   // attempt synchronous readQuery first (to prevent loading in {#await})
-
   if (restoring.has(client)) {
     try {
       // undefined = skip initial value (not in cache)
       initial_value = client.readQuery(options) || undefined;
+      initial_value = { data: initial_value } as any;
     } catch (err) {
       // Ignore preload errors
     }
   }
 
+  // Create query and observe,
+  // but don't subscribe directly to avoid firing duplicate value if initialized
   const observable_query = client.watchQuery<TData>(options);
   const { subscribe: subscribe_to_query } = observe<Value>(
     observable_query,
     initial_value
   );
 
-  const { subscribe } = readable<Deferred<Value>>(set => {
-    subscribed = true;
+  // Wrap the query subscription with a readable to prevent duplicate values
+  const { subscribe } = readable(
+    (initial_value as unknown) as Deferred<Value>,
+    set => {
+      subscribed = true;
 
-    const skip_duplicate = initial_value !== undefined;
-    let initialized = false;
-    let skipped = false;
+      const skip_duplicate = initial_value !== undefined;
+      let initialized = false;
+      let skipped = false;
 
-    const unsubscribe = subscribe_to_query(value => {
-      if (skip_duplicate && initialized && !skipped) {
-        skipped = true;
-      } else {
-        if (!initialized) initialized = true;
-        set(value);
-      }
-    });
+      const unsubscribe = subscribe_to_query(value => {
+        if (skip_duplicate && initialized && !skipped) {
+          skipped = true;
+        } else {
+          if (!initialized) initialized = true;
+          set(value);
+        }
+      });
 
-    return unsubscribe;
-  });
+      return unsubscribe;
+    }
+  );
 
   return {
     subscribe,

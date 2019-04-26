@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "apollo-utilities": "^1.2.1",
-    "svelte-observable": "^0.4.0-beta.2"
+    "svelte-observable": "^0.4.0"
   },
   "peerDependencies": {
     "apollo-client": "^2.4.0",
