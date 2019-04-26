@@ -184,7 +184,7 @@ Subscribe using an Apollo client, returning a store that is compatible with `{#a
 {/await}
 ```
 
-<a href="#restore" name="restore">#</a> <b>restore</b>(<i>client</i>, <i>values</i>)
+<a href="#restore" name="restore">#</a> <b>restore</b>(<i>client</i>, <i>query</i>, <i>data</i>)
 
 Restore a previously executed query (e.g. via preload) into the Apollo cache.
 
@@ -193,13 +193,13 @@ Restore a previously executed query (e.g. via preload) into the Apollo cache.
   import client from './client';
   import gql from 'graphql-tag';
 
+  const query = gql`
+    ...
+  `;
+
   export async function preload {
     return {
-      preloaded: await client.query({
-        query: gql`
-          ...
-        `
-      })
+      preloaded: await client.query({ query })
     };
   }
 </script>
@@ -210,7 +210,7 @@ Restore a previously executed query (e.g. via preload) into the Apollo cache.
   export let preloaded;
 
   // Load preloaded values into client's cache
-  restore(client, preloaded);
+  restore(client, query, preloaded.data);
 </script>
 ```
 

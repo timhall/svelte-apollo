@@ -12,6 +12,7 @@
   import { getClient, restore, query } from '../../';
   
   export let cache;
+  restore(client, BOOKS, cache.data);
 
   const books = query(client, { query: BOOKS });
 </script>
