@@ -3,6 +3,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloLink } from 'apollo-link';
 import { withClientState } from 'apollo-link-state';
 import { ReadableStore } from 'svelte/store';
+import { Next } from '../src/types';
 
 export interface MockOptions {
   watchQuery?: (options: any) => any;
@@ -45,9 +46,6 @@ export class MockClient<TCache> extends ApolloClient<TCache> {
     this.subscribe = jest.fn(subscribe);
   }
 }
-
-type Next<T> = (value: T) => void;
-export type Deferred<T> = T | Promise<T>;
 
 export async function read<T>(
   store: ReadableStore<T>,

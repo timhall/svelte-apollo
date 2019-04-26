@@ -56,10 +56,10 @@ describe('restore', () => {
       data: { name: 'Tim' }
     };
     const client = new MockClient({
-      readQuery: () => {
+      readQuery() {
         return result;
       },
-      watchQuery: () => {
+      watchQuery() {
         return Observable.of(result);
       }
     });
@@ -77,10 +77,10 @@ describe('restore', () => {
       data: { name: 'Tim' }
     };
     const client = new MockClient({
-      readQuery: () => {
+      readQuery() {
         return result;
       },
-      watchQuery: () => {
+      watchQuery() {
         return Observable.of(result);
       }
     });
@@ -95,7 +95,7 @@ describe('restore', () => {
 
   it('should swallow errors from readQuery', () => {
     const client = new MockClient({
-      readQuery: () => {
+      readQuery() {
         throw new Error('(swallowed)');
       }
     });
