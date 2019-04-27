@@ -257,8 +257,8 @@ for the various components when it's needed.
   import { gql } from 'apollo-boost';
 
   const EVERYTHING = gql`
-    everything needed for route...
-    (cache misses fall back to loading)
+    # everything needed for route...
+    # (cache misses fall back to loading)
   `;
 
   export async function preload() {
