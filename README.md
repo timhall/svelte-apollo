@@ -254,15 +254,17 @@ for the various components when it's needed.
 <!-- routes/settings.html -->
 <script context="module">
   import client from '../data/client';
-  import gql from 'graphql-tag';
+  import { gql } from 'apollo-boost';
+
+  const EVERYTHING = gql`
+    everything needed for route...
+    (cache misses fall back to loading)
+  `;
 
   export async function preload() {
     return {
       cache: await client.query({
-        query: gql`
-          everything needed for route...
-          (cache misses simply fall back to loading)
-        `
+        query: EVERYTHING
       })
     }
   }
@@ -274,7 +276,7 @@ for the various components when it's needed.
   import GET_PREFERENCES from '../data/queries';
 
   export let cache;
-  restore(client, cache);
+  restore(client, EVERYTHING, cache.data);
   setClient(client);
 
   // query a subset of the preloaded (the rest if for Account)
