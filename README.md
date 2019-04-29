@@ -285,7 +285,7 @@ for the various components when it's needed.
 
 <Account />
 
-{await $preferences}
+{#await $preferences}
   Loading won't be shown if preloaded
 {:then result}
   ...
