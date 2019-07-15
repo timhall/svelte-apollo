@@ -197,7 +197,7 @@ Restore a previously executed query (e.g. via preload) into the Apollo cache.
     ...
   `;
 
-  export async function preload {
+  export async function preload() {
     return {
       preloaded: await client.query({ query })
     };
