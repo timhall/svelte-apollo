@@ -1,6 +1,6 @@
 import { onMount } from 'svelte';
-import { DocumentNode } from 'graphql';
-import ApolloClient from 'apollo-client';
+import ApolloClient, { OperationVariables } from 'apollo-client';
+import { DataProxy } from 'apollo-cache';
 
 export type Restoring<TCache> =
   | WeakSet<ApolloClient<TCache>>
@@ -9,17 +9,16 @@ export type Restoring<TCache> =
 export const restoring: Restoring<any> =
   typeof WeakSet !== 'undefined' ? new WeakSet() : new Set();
 
-export default function restore<TCache = any, TData = any>(
+export default function restore<TCache = any, TData = any, TVariables = OperationVariables>(
   client: ApolloClient<TCache>,
-  query: DocumentNode,
-  data: TData
+  options: DataProxy.WriteQueryOptions<TData, TVariables>,
 ): void {
   restoring.add(client);
   afterHydrate(() => {
     restoring.delete(client);
   });
 
-  client.writeQuery({ query, data });
+  client.writeQuery(options);
 }
 
 function afterHydrate(callback: () => void): void {
