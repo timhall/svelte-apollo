@@ -26,6 +26,7 @@ export interface QueryStore<TData = any> {
   startPolling: ObservableQuery['startPolling'];
   stopPolling: ObservableQuery['stopPolling'];
   subscribeToMore: ObservableQuery['subscribeToMore'];
+  toPromise: () => Promise<ApolloQueryResult<TData>>;
 }
 
 export default function query<TData = any, TCache = any, TVariables = any>(
@@ -80,6 +81,8 @@ export default function query<TData = any, TCache = any, TVariables = any>(
     }
   );
 
+  const toPromise: () => Promise<ApolloQueryResult<TData>> = () => new Promise((resolve, reject) => observable_query.subscribe(resolve, reject))
+
   return {
     subscribe,
     refetch: variables => {
@@ -95,6 +98,7 @@ export default function query<TData = any, TCache = any, TVariables = any>(
     updateQuery: map => observable_query.updateQuery(map),
     startPolling: interval => observable_query.startPolling(interval),
     stopPolling: () => observable_query.stopPolling(),
-    subscribeToMore: options => observable_query.subscribeToMore(options)
+    subscribeToMore: options => observable_query.subscribeToMore(options),
+    toPromise
   };
 }
