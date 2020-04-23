@@ -2,12 +2,13 @@ import { isEqual } from 'apollo-utilities';
 import { readable } from 'svelte/store';
 import { observe } from 'svelte-observable';
 import { restoring } from './restore';
-import ApolloClient, {
+import {
   ObservableQuery,
   WatchQueryOptions,
   ApolloQueryResult
 } from 'apollo-client';
 import { Deferred, Next, Unsubscribe } from './types';
+import { getClient } from './context';
 
 export interface QueryStore<TData = any> {
   subscribe: (
@@ -28,11 +29,12 @@ export interface QueryStore<TData = any> {
   subscribeToMore: ObservableQuery['subscribeToMore'];
 }
 
-export default function query<TData = any, TCache = any, TVariables = any>(
-  client: ApolloClient<TCache>,
+export default function query<TData = any, TVariables = any>(
   options: WatchQueryOptions<TVariables>
 ): QueryStore<TData> {
   type Value = ApolloQueryResult<TData>;
+
+  const client = getClient();
 
   let subscribed = false;
   let initial_value: Value | undefined;

@@ -3,7 +3,7 @@ import ApolloClient from 'apollo-client';
 
 const CLIENT = typeof Symbol !== 'undefined' ? Symbol('client') : '@@client';
 
-export function getClient<TCache = any>(): ApolloClient<TCache> | undefined {
+export function getClient<TCache = any>(): ApolloClient<TCache> {
   return getContext(CLIENT);
 }
 
