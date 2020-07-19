@@ -1,15 +1,15 @@
-import { observe } from 'svelte-observable';
-import ApolloClient, { SubscriptionOptions } from 'apollo-client';
-import { Deferred, Next, Unsubscribe } from './types';
+import { observe } from "svelte-observable";
+import ApolloClient, { SubscriptionOptions } from "apollo-client";
+import { Deferred, Next, Unsubscribe } from "./types";
 
 export interface ReadableStore<T> {
-  subscribe(next: Next<T>): Unsubscribe;
+	subscribe(next: Next<T>): Unsubscribe;
 }
 
 export default function subscribe<TCache = any, TVariables = any, T = any>(
-  client: ApolloClient<TCache>,
-  options: SubscriptionOptions<TVariables>
+	client: ApolloClient<TCache>,
+	options: SubscriptionOptions<TVariables>
 ): ReadableStore<Deferred<T>> {
-  const observable = client.subscribe(options);
-  return observe<T>(observable);
+	const observable = client.subscribe(options);
+	return observe<T>(observable);
 }

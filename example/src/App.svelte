@@ -1,7 +1,7 @@
 <script>
-	import { client } from './data';
-	import { setClient } from '../../';
-	import Books, { preload } from './Books.svelte';
+	import { client } from "./data";
+	import { setClient } from "../../";
+	import Books, { preload } from "./Books.svelte";
 
 	// Approximate sapper preload
 	const preloading = preload();
