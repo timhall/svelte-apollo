@@ -1,100 +1,30 @@
-import { isEqual } from "apollo-utilities";
-import { readable } from "svelte/store";
-import { observe } from "svelte-observable";
+import { ApolloQueryResult, WatchQueryOptions } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import { getClient } from "./context";
+import { observableQueryToReadable, ReadableQuery } from "./observable";
 import { restoring } from "./restore";
-import ApolloClient, {
-	ObservableQuery,
-	WatchQueryOptions,
-	ApolloQueryResult,
-} from "apollo-client";
-import { Deferred, Next, Unsubscribe } from "./types";
 
-export interface QueryStore<TData = any> {
-	subscribe: (
-		subscription: Next<Deferred<ApolloQueryResult<TData>>>
-	) => Unsubscribe;
+export function query<TData = any, TVariables = any>(
+	query: DocumentNode,
+	options: Omit<WatchQueryOptions<TVariables>, "query"> = {}
+): ReadableQuery<TData> {
+	const client = getClient();
+	const queryOptions = { ...options, query };
 
-	// Most likely extension from ObservableQuery needed
-	refetch: ObservableQuery["refetch"];
-
-	// Rest included for completeness
-	// (except for setVariables, marked internal use only)
-	result: ObservableQuery["result"];
-	fetchMore: ObservableQuery["fetchMore"];
-	setOptions: ObservableQuery["setOptions"];
-	updateQuery: ObservableQuery["updateQuery"];
-	startPolling: ObservableQuery["startPolling"];
-	stopPolling: ObservableQuery["stopPolling"];
-	subscribeToMore: ObservableQuery["subscribeToMore"];
-}
-
-export default function query<TData = any, TCache = any, TVariables = any>(
-	client: ApolloClient<TCache>,
-	options: WatchQueryOptions<TVariables>
-): QueryStore<TData> {
-	type Value = ApolloQueryResult<TData>;
-
-	let subscribed = false;
-	let initial_value: Value | undefined;
-
-	// If client is restoring (e.g. from SSR)
-	// attempt synchronous readQuery first (to prevent loading in {#await})
+	// If client is restoring (e.g. from SSR), attempt synchronous readQuery first
+	let initialValue: ApolloQueryResult<TData> | undefined;
 	if (restoring.has(client)) {
 		try {
 			// undefined = skip initial value (not in cache)
-			initial_value = client.readQuery(options) || undefined;
-			initial_value = { data: initial_value } as any;
+			initialValue = client.readQuery(queryOptions) || undefined;
+			initialValue = { data: initialValue } as any;
 		} catch (err) {
 			// Ignore preload errors
 		}
 	}
 
-	// Create query and observe,
-	// but don't subscribe directly to avoid firing duplicate value if initialized
-	const observable_query = client.watchQuery<TData>(options);
-	const { subscribe: subscribe_to_query } = observe<Value>(
-		observable_query,
-		initial_value
-	);
+	const observable = client.watchQuery<TData>(queryOptions);
+	const store = observableQueryToReadable(observable, initialValue);
 
-	// Wrap the query subscription with a readable to prevent duplicate values
-	const { subscribe } = readable(
-		(initial_value as unknown) as Deferred<Value>,
-		(set) => {
-			subscribed = true;
-
-			const skip_duplicate = initial_value !== undefined;
-			let initialized = false;
-			let skipped = false;
-
-			const unsubscribe = subscribe_to_query((value) => {
-				if (skip_duplicate && initialized && !skipped) {
-					skipped = true;
-				} else {
-					if (!initialized) initialized = true;
-					set(value);
-				}
-			});
-
-			return unsubscribe;
-		}
-	);
-
-	return {
-		subscribe,
-		refetch: (variables) => {
-			// If variables have not changed and not subscribed, skip refetch
-			if (!subscribed && isEqual(variables, observable_query.variables))
-				return observable_query.result();
-
-			return observable_query.refetch(variables);
-		},
-		result: () => observable_query.result(),
-		fetchMore: (options) => observable_query.fetchMore(options),
-		setOptions: (options) => observable_query.setOptions(options),
-		updateQuery: (map) => observable_query.updateQuery(map),
-		startPolling: (interval) => observable_query.startPolling(interval),
-		stopPolling: () => observable_query.stopPolling(),
-		subscribeToMore: (options) => observable_query.subscribeToMore(options),
-	};
+	return store;
 }

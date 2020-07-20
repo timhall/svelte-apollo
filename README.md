@@ -156,16 +156,16 @@ Prepare a GraphQL mutation with the Apollo client, using Apollo's [`mutate`](htt
 </form>
 ```
 
-<a href="#subscription" name="subscription">#</a> <b>subscription</b>(<i>document</i>[, <i>options</i>])
+<a href="#subscribe" name="subscribe">#</a> <b>subscribe</b>(<i>document</i>[, <i>options</i>])
 
 Subscribe using an Apollo client, returning a store that is compatible with `{#await $...}`. Uses Apollo's [`subscribe`](https://www.apollographql.com/docs/react/api/apollo-client#ApolloClient.subscribe).
 
 ```svelte
 <script>
-  import { subscription } from "svelte-apollo";
+  import { subscribe } from "svelte-apollo";
   import { NEW_BOOKS } from "./queries";
 
-  const newBooks = subscription(NEW_BOOKS);
+  const newBooks = subscribe(NEW_BOOKS);
 </script>
 
 {#if $newBooks.loading}
