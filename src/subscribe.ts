@@ -1,15 +1,14 @@
-import { observe } from "svelte-observable";
-import ApolloClient, { SubscriptionOptions } from "apollo-client";
-import { Deferred, Next, Unsubscribe } from "./types";
+import { SubscriptionOptions } from "@apollo/client";
+import { DocumentNode } from "graphql";
+import { getClient } from "./context";
+import { observableToReadable, ReadableResult } from "./observable";
 
-export interface ReadableStore<T> {
-	subscribe(next: Next<T>): Unsubscribe;
-}
+export function subscribe<TData = any, TVariables = any>(
+	query: DocumentNode,
+	options: Omit<SubscriptionOptions<TVariables>, "query"> = {}
+): ReadableResult<TData> {
+	const client = getClient();
+	const observable = client.subscribe<TData, TVariables>({ query, ...options });
 
-export default function subscribe<TCache = any, TVariables = any, T = any>(
-	client: ApolloClient<TCache>,
-	options: SubscriptionOptions<TVariables>
-): ReadableStore<Deferred<T>> {
-	const observable = client.subscribe(options);
-	return observe<T>(observable);
+	return observableToReadable<TData>(observable);
 }
