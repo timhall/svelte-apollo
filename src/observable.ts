@@ -10,13 +10,19 @@ import { Readable, readable } from "svelte/store";
 // loading, error, or data (where data could be null / undefined)
 
 export interface Loading {
-	loading: boolean;
+	loading: true;
+	data?: undefined;
+	error?: undefined;
 }
 export interface Error {
+	loading: false;
+	data?: undefined;
 	error: ApolloError | Error;
 }
 export interface Data<TData = any> {
+	loading: false;
 	data: TData | null | undefined;
+	error?: undefined;
 }
 
 export type Result<TData = any> = Loading | Error | Data<TData>;
@@ -28,20 +34,34 @@ export type ReadableResult<TData = any> = Readable<Result<TData>>;
 
 export function observableToReadable<TData = any>(
 	observable: Observable<FetchResult<TData>>,
-	initialValue: Result<TData> = { loading: true }
+	initialValue: Result<TData> = {
+		loading: true,
+		data: undefined,
+		error: undefined,
+	}
 ): ReadableResult<TData> {
 	const store = readable<Result<TData>>(initialValue, (set) => {
+		const skipDuplicate = initialValue?.data !== undefined;
+		let skipped = false;
+
 		const subscription = observable.subscribe(
 			(result) => {
+				if (skipDuplicate && !skipped) {
+					skipped = true;
+					return;
+				}
+
 				if (result.errors) {
 					const error = new ApolloError({ graphQLErrors: result.errors });
-					set({ error });
+					set({ loading: false, data: undefined, error });
 				} else {
-					set({ data: result.data });
+					set({ loading: false, data: result.data, error: undefined });
 				}
 			},
-			(error) => set({ error })
+			(error) => set({ loading: false, data: undefined, error })
 		);
+
+		return () => subscription.unsubscribe();
 	});
 
 	return store;
@@ -68,7 +88,7 @@ export interface ObservableQueryExtensions {
 	updateQuery: ObservableQuery["updateQuery"];
 }
 
-const extensions: Array<keyof ObservableQueryExtensions> = [
+export const extensions: Array<keyof ObservableQueryExtensions> = [
 	"fetchMore",
 	"getCurrentResult",
 	"getLastError",

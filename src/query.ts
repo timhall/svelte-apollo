@@ -1,7 +1,7 @@
 import { ApolloQueryResult, WatchQueryOptions } from "@apollo/client";
 import { DocumentNode } from "graphql";
 import { getClient } from "./context";
-import { observableQueryToReadable, ReadableQuery } from "./observable";
+import { observableQueryToReadable, ReadableQuery, Result } from "./observable";
 import { restoring } from "./restore";
 
 export function query<TData = any, TVariables = any>(
@@ -17,14 +17,16 @@ export function query<TData = any, TVariables = any>(
 		try {
 			// undefined = skip initial value (not in cache)
 			initialValue = client.readQuery(queryOptions) || undefined;
-			initialValue = { data: initialValue } as any;
 		} catch (err) {
 			// Ignore preload errors
 		}
 	}
 
 	const observable = client.watchQuery<TData>(queryOptions);
-	const store = observableQueryToReadable(observable, initialValue);
+	const store = observableQueryToReadable(
+		observable,
+		initialValue as Result<TData>
+	);
 
 	return store;
 }
