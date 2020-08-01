@@ -1,0 +1,22 @@
+import { Observable } from "@apollo/client";
+import { extensions } from "../observable";
+
+export type Mock = {
+	calls: Array<any[]>;
+};
+
+export function getMock(value: any): Mock {
+	return value.mock;
+}
+
+export type MockClient = any;
+
+export function mockObservableQuery(value: any) {
+	const query: any = Observable.of(value);
+
+	for (const extension of extensions) {
+		query[extension] = jest.fn();
+	}
+
+	return query;
+}

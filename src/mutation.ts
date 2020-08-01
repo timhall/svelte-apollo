@@ -16,6 +16,6 @@ export function mutation<T = any, TVariables = any>(
 ): Mutate<T, TVariables> {
 	const client = getClient();
 
-	return (options: MutateOptions<T, TVariables>) =>
+	return (options: Omit<MutateOptions<T, TVariables>, "mutation">) =>
 		client.mutate({ mutation, ...options });
 }
