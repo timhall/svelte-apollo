@@ -40,7 +40,7 @@ The following simple example shows how to run a simple query with svelte-apollo.
   Loading...
 {:elseif $books.error}
   Error: {$books.error.message}
-{:elseif $books.data}
+{:else}
   {#each $books.data.books as book}
     {book.title} by {book.author.name}
   {/each}
@@ -95,8 +95,6 @@ Reactive variables are supported with `refetch`:
   export let author;
   let search = "";
 
-  // The books query isn't executed until variables are given via refetch
-  // allowing svelte's reactive declarations to be used for variables
   const books = query(SEARCH_BY_AUTHOR, {
     variables: { author, search },
   });
@@ -175,7 +173,7 @@ Subscribe using an Apollo client, returning a store that is compatible with `{#a
 {/if}
 ```
 
-<a href="#restore" name="restore">#</a> <b>restore</b>(<i>document</i>, <i>data</i>)
+<a href="#restore" name="restore">#</a> <b>restore</b>(<i>document</i>, <i>options</i>)
 
 Restore a previously executed query (e.g. via preload) into the Apollo cache.
 
@@ -197,7 +195,7 @@ Restore a previously executed query (e.g. via preload) into the Apollo cache.
   export let preloaded;
 
   // Load preloaded values into client's cache
-  restore(GET_BOOKS, preloaded.data);
+  restore(GET_BOOKS, preloaded);
 </script>
 ```
 
@@ -227,5 +225,3 @@ Get an Apollo client from the current component's context.
   const client = getClient();
 </script>
 ```
-
-Note: `setClient` and `getClient` are fairly minimal wrappers for svelte's built-in context. If you need access to multiple clients, you can define them using [`getContext`](https://svelte.dev/docs#getContext) /[`setContext`](https://svelte.dev/docs#setContext) from svelte.

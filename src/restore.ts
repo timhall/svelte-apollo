@@ -12,25 +12,14 @@ export const restoring: Restoring<any> =
 
 export function restore<TData = any, TVariables = OperationVariables>(
 	query: DocumentNode,
-	data: TData
-): void;
-export function restore<TData = any, TVariables = OperationVariables>(
-	options: DataProxy.WriteQueryOptions<TData, TVariables>
-): void;
-export function restore<TData = any, TVariables = OperationVariables>(
-	maybeQuery: DocumentNode | DataProxy.WriteQueryOptions<TData, TVariables>,
-	maybeData?: TData
+	options: Omit<DataProxy.WriteQueryOptions<TData, TVariables>, "query">
 ): void {
 	const client = getClient();
 
 	restoring.add(client);
 	afterHydrate(() => restoring.delete(client));
 
-	const options = isWriteQueryOptions(maybeQuery)
-		? maybeQuery
-		: { query: maybeQuery, data: maybeData };
-
-	client.writeQuery(options);
+	client.writeQuery({ query, ...options });
 }
 
 function afterHydrate(callback: () => void): void {
@@ -43,10 +32,4 @@ function afterHydrate(callback: () => void): void {
 	} catch (_error) {
 		setTimeout(callback, 1);
 	}
-}
-
-function isWriteQueryOptions(
-	value: any
-): value is DataProxy.WriteQueryOptions<any, any> {
-	return value && value.query;
 }

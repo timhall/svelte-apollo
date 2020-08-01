@@ -26,7 +26,7 @@ it("should add client to restoring set", () => {
 
 it("should call client writeQuery", () => {
 	setClient({} as any);
-	restore(MESSAGES, { messages: [] });
+	restore(MESSAGES, { data: { messages: [] } });
 
 	const client = getClient();
 	expect(client.writeQuery).toBeCalled();
