@@ -20,14 +20,13 @@
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write \"src/**/*.ts\""
 	},
-	"dependencies": {},
 	"peerDependencies": {
-		"@apollo/client": "^3.0.0",
+		"@apollo/client": "^3.2.0",
 		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",
 		"svelte": "^3.0.0"
 	},
 	"devDependencies": {
-		"@apollo/client": "^3.1.1",
+		"@apollo/client": "^3.2.0",
 		"@rollup/plugin-typescript": "^5.0.2",
 		"@types/jest": "^26.0.8",
 		"graphql": "^14.7.0",
@@ -39,7 +38,7 @@
 		"rollup-plugin-filesize": "^9.0.2",
 		"svelte": "^3.24.0",
 		"ts-jest": "^26.1.4",
-		"typescript": "^3.9.7"
+		"typescript": "^4.0.2"
 	},
 	"jest": {
 		"testEnvironment": "node",

@@ -12,17 +12,21 @@ export function query<TData = any, TVariables = any>(
 	const queryOptions = { ...options, query };
 
 	// If client is restoring (e.g. from SSR), attempt synchronous readQuery first
-	let initialValue: ApolloQueryResult<TData> | undefined;
+	let initialValue: Omit<ApolloQueryResult<TData>, 'networkStatus'> | undefined;
+
 	if (restoring.has(client)) {
 		try {
 			// undefined = skip initial value (not in cache)
-			initialValue = client.readQuery(queryOptions) || undefined;
+			const data = client.readQuery(queryOptions)
+
+			initialValue = data && { data, error: undefined, loading: false } || undefined;
 		} catch (err) {
 			// Ignore preload errors
 		}
 	}
 
-	const observable = client.watchQuery<TData>(queryOptions);
+	const observable = client.watchQuery(queryOptions);
+	
 	const store = observableQueryToReadable(
 		observable,
 		initialValue as Result<TData>

@@ -4,7 +4,7 @@ import { getContext, setContext } from "svelte";
 const CLIENT = typeof Symbol !== "undefined" ? Symbol("client") : "@@client";
 
 export function getClient<TCache = any>(): ApolloClient<TCache> {
-	const client = getContext(CLIENT);
+	const client = getContext<ApolloClient<TCache> | undefined>(CLIENT);
 
 	if (!client) {
 		throw new Error(

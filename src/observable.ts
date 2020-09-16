@@ -110,7 +110,7 @@ export type ReadableQuery<TData> = ReadableResult<TData> &
 	ObservableQueryExtensions;
 
 export function observableQueryToReadable<TData = any>(
-	query: ObservableQuery<TData>,
+	query: ObservableQuery<TData, any>,
 	initialValue?: Result<TData>
 ): ReadableQuery<TData> {
 	const store = observableToReadable(query, initialValue) as ReadableQuery<
