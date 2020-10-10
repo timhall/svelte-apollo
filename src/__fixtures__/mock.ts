@@ -1,4 +1,4 @@
-import { Observable } from "@apollo/client";
+import { Observable } from "@apollo/client/core";
 import { extensions } from "../observable";
 
 export type Mock = {

@@ -1,10 +1,7 @@
-import {
-	ApolloError,
-	FetchResult,
-	Observable,
-	ObservableQuery,
-} from "@apollo/client";
-import { Readable, readable } from "svelte/store";
+import { ApolloError } from "@apollo/client/core";
+import type { FetchResult, Observable, ObservableQuery } from "@apollo/client";
+import { readable } from "svelte/store";
+import { Readable } from "svelte/store";
 
 // Match Apollo's hook approach, by returning a result with three states:
 // loading, error, or data (where data could be null / undefined)
@@ -19,20 +16,20 @@ export interface Error {
 	data?: undefined;
 	error: ApolloError | Error;
 }
-export interface Data<TData = any> {
+export interface Data<TData = unknown> {
 	loading: false;
 	data: TData | null | undefined;
 	error?: undefined;
 }
 
-export type Result<TData = any> = Loading | Error | Data<TData>;
+export type Result<TData = unknown> = Loading | Error | Data<TData>;
 
 // Some methods, e.g. subscription, use Observable<FetchResult>,
 // convert this more raw value to a readable
 
-export type ReadableResult<TData = any> = Readable<Result<TData>>;
+export type ReadableResult<TData = unknown> = Readable<Result<TData>>;
 
-export function observableToReadable<TData = any>(
+export function observableToReadable<TData = unknown>(
 	observable: Observable<FetchResult<TData>>,
 	initialValue: Result<TData> = {
 		loading: true,
@@ -109,8 +106,11 @@ export const extensions: Array<keyof ObservableQueryExtensions> = [
 export type ReadableQuery<TData> = ReadableResult<TData> &
 	ObservableQueryExtensions;
 
-export function observableQueryToReadable<TData = any>(
-	query: ObservableQuery<TData>,
+export function observableQueryToReadable<
+	TData = unknown,
+	TVariables = unknown
+>(
+	query: ObservableQuery<TData, TVariables>,
 	initialValue?: Result<TData>
 ): ReadableQuery<TData> {
 	const store = observableToReadable(query, initialValue) as ReadableQuery<

@@ -1,9 +1,10 @@
-import { SubscriptionOptions } from "@apollo/client";
-import { DocumentNode } from "graphql";
+import type { SubscriptionOptions } from "@apollo/client";
+import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
-import { observableToReadable, ReadableResult } from "./observable";
+import { observableToReadable } from "./observable";
+import type { ReadableResult } from "./observable";
 
-export function subscribe<TData = any, TVariables = any>(
+export function subscribe<TData = unknown, TVariables = unknown>(
 	query: DocumentNode,
 	options: Omit<SubscriptionOptions<TVariables>, "query"> = {}
 ): ReadableResult<TData> {

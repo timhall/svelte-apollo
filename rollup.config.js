@@ -2,7 +2,7 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import filesize from "rollup-plugin-filesize";
 
-const external = ["graphql", "@apollo/client", "svelte", "svelte/store"];
+const external = ["graphql", "@apollo/client", "@apollo/client/core", "svelte", "svelte/store"];
 
 export default [
 	{

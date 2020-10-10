@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client/core";
 import { restore } from "..";
 import { getClient, setClient } from "../context";
 import { restoring } from "../restore";

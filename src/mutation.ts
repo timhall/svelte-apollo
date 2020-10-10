@@ -1,17 +1,17 @@
-import { FetchResult, MutationOptions } from "@apollo/client";
-import { DocumentNode } from "graphql";
+import type { FetchResult, MutationOptions } from "@apollo/client";
+import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
 
-export type MutateOptions<T = any, TVariables = any> = Omit<
+export type MutateOptions<T = unknown, TVariables = unknown> = Omit<
 	MutationOptions<T, TVariables>,
 	"mutation"
 >;
 
-export type Mutate<T = any, TVariables = any> = (
+export type Mutate<T = unknown, TVariables = unknown> = (
 	options: MutateOptions<T, TVariables>
 ) => Promise<FetchResult<T>>;
 
-export function mutation<T = any, TVariables = any>(
+export function mutation<T = unknown, TVariables = unknown>(
 	mutation: DocumentNode
 ): Mutate<T, TVariables> {
 	const client = getClient();

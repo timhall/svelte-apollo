@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client/core";
 import { get } from "svelte/store";
 import { getClient, query, setClient } from "..";
 import { Result } from "../observable";
@@ -77,7 +77,7 @@ describe("restore", () => {
 	});
 
 	it("should have initial synchronous value from readQuery", async () => {
-		const initial = { data: { message: "Howdy" } };
+		const initial = { message: "Howdy" };
 		setClient({
 			readQuery: () => initial,
 			watchQuery: () => mockObservableQuery(initial),
@@ -89,7 +89,7 @@ describe("restore", () => {
 		const store = query(MESSAGE_BY_ID, { variables: { id: 5 } });
 		const initialValue = get(store);
 
-		expect(initialValue).toEqual(initial);
+		expect(initialValue).toEqual({ data: initial });
 	});
 
 	it("should not have duplicate value when using readQuery", async () => {

@@ -1,6 +1,6 @@
 /dist
-/example/public/bundle.*
 
 node_modules
 .vscode
 .DS_store
+coverage

@@ -22,24 +22,23 @@
 	},
 	"dependencies": {},
 	"peerDependencies": {
-		"@apollo/client": "^3.0.0",
+		"@apollo/client": "^3.2.0",
 		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",
 		"svelte": "^3.0.0"
 	},
 	"devDependencies": {
-		"@apollo/client": "^3.1.1",
-		"@rollup/plugin-typescript": "^5.0.2",
-		"@types/jest": "^26.0.8",
-		"graphql": "^14.7.0",
-		"jest": "^26.2.2",
-		"prettier": "^2.0.5",
-		"react": "^16.13.1",
-		"rollup": "^2.23.0",
-		"rollup-plugin-dts": "^1.4.9",
+		"@apollo/client": "^3.2.3",
+		"@rollup/plugin-typescript": "^6.0.0",
+		"@types/jest": "^26.0.14",
+		"graphql": "^15.3.0",
+		"jest": "^26.5.2",
+		"prettier": "^2.1.2",
+		"rollup": "^2.29.0",
+		"rollup-plugin-dts": "^1.4.13",
 		"rollup-plugin-filesize": "^9.0.2",
-		"svelte": "^3.24.0",
-		"ts-jest": "^26.1.4",
-		"typescript": "^3.9.7"
+		"svelte": "^3.29.0",
+		"ts-jest": "^26.4.1",
+		"typescript": "^4.0.3"
 	},
 	"jest": {
 		"testEnvironment": "node",

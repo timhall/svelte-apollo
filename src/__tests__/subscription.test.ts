@@ -1,4 +1,4 @@
-import { gql, Observable } from "@apollo/client";
+import { gql, Observable } from "@apollo/client/core";
 import { subscribe } from "..";
 import { getClient, setClient } from "../context";
 import { getMock } from "../__fixtures__/mock";

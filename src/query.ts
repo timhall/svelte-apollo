@@ -1,18 +1,22 @@
-import { ApolloQueryResult, WatchQueryOptions } from "@apollo/client";
-import { DocumentNode } from "graphql";
+import type { WatchQueryOptions } from "@apollo/client";
+import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
-import { observableQueryToReadable, ReadableQuery, Result } from "./observable";
+import { Data, observableQueryToReadable } from "./observable";
+import type { ReadableQuery } from "./observable";
 import { restoring } from "./restore";
 
-export function query<TData = any, TVariables = any>(
+export function query<TData = unknown, TVariables = unknown>(
 	query: DocumentNode,
-	options: Omit<WatchQueryOptions<TVariables>, "query"> = {}
+	options: Omit<WatchQueryOptions<TVariables, TData>, "query"> = {}
 ): ReadableQuery<TData> {
 	const client = getClient();
-	const queryOptions = { ...options, query };
+	const queryOptions = { ...options, query } as WatchQueryOptions<
+		TVariables,
+		TData
+	>;
 
 	// If client is restoring (e.g. from SSR), attempt synchronous readQuery first
-	let initialValue: ApolloQueryResult<TData> | undefined;
+	let initialValue: TData | undefined;
 	if (restoring.has(client)) {
 		try {
 			// undefined = skip initial value (not in cache)
@@ -22,10 +26,14 @@ export function query<TData = any, TVariables = any>(
 		}
 	}
 
-	const observable = client.watchQuery<TData>(queryOptions);
+	const observable = client.watchQuery<TData, TVariables>(queryOptions);
 	const store = observableQueryToReadable(
 		observable,
-		initialValue as Result<TData>
+		initialValue !== undefined
+			? ({
+					data: initialValue,
+			  } as Data<TData>)
+			: undefined
 	);
 
 	return store;
