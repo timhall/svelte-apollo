@@ -38,7 +38,7 @@ The following simple example shows how to run a simple query with svelte-apollo.
 <!-- 3. Use $books (note the "$"), to subscribe to query values -->
 {#if $books.loading}
   Loading...
-{:elseif $books.error}
+{:else if $books.error}
   Error: {$books.error.message}
 {:else}
   {#each $books.data.books as book}
@@ -73,7 +73,7 @@ If the client is hydrating after SSR, it attempts a `readQuery` to synchronously
 <ul>
   {#if $books.loading}
     <li>Loading...</li>
-  {:elseif $books.error}
+  {:else if $books.error}
     <li>ERROR: {$books.error.message}</li>
   {:else}
     {#each $books.data.books as book (book.id)}
@@ -109,9 +109,9 @@ Author: {author}
 <ul>
   {#if $books.loading}
     <li>Loading...</li>
-  {:elseif $books.error}
+  {:else if $books.error}
     <li>ERROR: {$books.error.message}</li>
-  {:elseif $books.data}
+  {:else if $books.data}
     {#each $books.data.books as book (book.id)}
       <li>{book.title}</li>
     {/each}
@@ -168,7 +168,7 @@ Subscribe using an Apollo client, returning a store that is compatible with `{#a
 
 {#if $newBooks.loading}
   Waiting for new books...
-{:elseif $newBooks.data}
+{:else if $newBooks.data}
   New Book: {$newBooks.data.book}
 {/if}
 ```
