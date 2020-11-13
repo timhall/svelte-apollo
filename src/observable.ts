@@ -67,22 +67,22 @@ export function observableToReadable<TData = unknown>(
 // For live queries, ObservableQuery is used, adding methods like refetch
 // extend readable with these methods
 
-export interface ObservableQueryExtensions {
-	fetchMore: ObservableQuery["fetchMore"];
-	getCurrentResult: ObservableQuery["getCurrentResult"];
-	getLastError: ObservableQuery["getLastError"];
-	getLastResult: ObservableQuery["getLastResult"];
-	isDifferentFromLastResult: ObservableQuery["isDifferentFromLastResult"];
-	refetch: ObservableQuery["refetch"];
-	resetLastResults: ObservableQuery["resetLastResults"];
-	resetQueryStoreErrors: ObservableQuery["resetQueryStoreErrors"];
-	result: ObservableQuery["result"];
-	setOptions: ObservableQuery["setOptions"];
-	setVariables: ObservableQuery["setVariables"];
-	startPolling: ObservableQuery["startPolling"];
-	stopPolling: ObservableQuery["stopPolling"];
-	subscribeToMore: ObservableQuery["subscribeToMore"];
-	updateQuery: ObservableQuery["updateQuery"];
+export interface ObservableQueryExtensions<TData = unknown> {
+	fetchMore: ObservableQuery<TData>["fetchMore"];
+	getCurrentResult: ObservableQuery<TData>["getCurrentResult"];
+	getLastError: ObservableQuery<TData>["getLastError"];
+	getLastResult: ObservableQuery<TData>["getLastResult"];
+	isDifferentFromLastResult: ObservableQuery<TData>["isDifferentFromLastResult"];
+	refetch: ObservableQuery<TData>["refetch"];
+	resetLastResults: ObservableQuery<TData>["resetLastResults"];
+	resetQueryStoreErrors: ObservableQuery<TData>["resetQueryStoreErrors"];
+	result: ObservableQuery<TData>["result"];
+	setOptions: ObservableQuery<TData>["setOptions"];
+	setVariables: ObservableQuery<TData>["setVariables"];
+	startPolling: ObservableQuery<TData>["startPolling"];
+	stopPolling: ObservableQuery<TData>["stopPolling"];
+	subscribeToMore: ObservableQuery<TData>["subscribeToMore"];
+	updateQuery: ObservableQuery<TData>["updateQuery"];
 }
 
 export const extensions: Array<keyof ObservableQueryExtensions> = [
@@ -104,7 +104,7 @@ export const extensions: Array<keyof ObservableQueryExtensions> = [
 ];
 
 export type ReadableQuery<TData> = ReadableResult<TData> &
-	ObservableQueryExtensions;
+	ObservableQueryExtensions<TData>;
 
 export function observableQueryToReadable<
 	TData = unknown,
