@@ -12,10 +12,11 @@ export type Mutate<T = unknown, TVariables = unknown> = (
 ) => Promise<FetchResult<T>>;
 
 export function mutation<T = unknown, TVariables = unknown>(
-	mutation: DocumentNode
+	mutation: DocumentNode,
+	initialOptions: MutateOptions<T, TVariables> = {}
 ): Mutate<T, TVariables> {
 	const client = getClient();
 
 	return (options: MutateOptions<T, TVariables>) =>
-		client.mutate({ mutation, ...options });
+		client.mutate({ mutation, ...initialOptions, ...options });
 }
