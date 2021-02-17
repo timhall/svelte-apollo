@@ -11,7 +11,7 @@ export interface Loading {
 	data?: undefined;
 	error?: undefined;
 }
-export interface Error {
+export interface ReadableError {
 	loading: false;
 	data?: undefined;
 	error: ApolloError | Error;
@@ -22,7 +22,7 @@ export interface Data<TData = unknown> {
 	error?: undefined;
 }
 
-export type Result<TData = unknown> = Loading | Error | Data<TData>;
+export type Result<TData = unknown> = Loading | ReadableError | Data<TData>;
 
 // Some methods, e.g. subscription, use Observable<FetchResult>,
 // convert this more raw value to a readable
