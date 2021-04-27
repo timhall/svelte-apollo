@@ -225,3 +225,14 @@ Get an Apollo client from the current component's context.
   const client = getClient();
 </script>
 ```
+
+Caveat: when using Vite as your bundler and encounter the error `Function called outside component initialization`, you must add `svelte-apollo` to Vite's `optimizeDeps.exclude` configuration property:
+
+```
+{
+  optimizeDeps: {
+    exclude: ["svelte-apollo"],
+  }
+  // other properties
+}
+```
