@@ -1,4 +1,4 @@
-import { Readable } from "svelte/store";
+import type { Readable } from "svelte/store";
 
 export async function read<TValue = any>(
 	store: Readable<TValue>

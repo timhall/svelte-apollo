@@ -2,7 +2,13 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import filesize from "rollup-plugin-filesize";
 
-const external = ["graphql", "@apollo/client", "@apollo/client/core", "svelte", "svelte/store"];
+const external = [
+	"graphql",
+	"@apollo/client",
+	"@apollo/client/core",
+	"svelte",
+	"svelte/store",
+];
 
 export default [
 	{
@@ -20,7 +26,7 @@ export default [
 				sourcemap: true,
 			},
 		],
-		plugins: [typescript(), filesize()],
+		plugins: [typescript({ composite: false, incremental: false }), filesize()],
 	},
 	{
 		input: "src/index.ts",
@@ -29,6 +35,8 @@ export default [
 			file: "dist/svelte-apollo.d.ts",
 			format: "es",
 		},
-		plugins: [dts()],
+		plugins: [
+			dts({ compilerOptions: { composite: false, incremental: false } }),
+		],
 	},
 ];

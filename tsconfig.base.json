@@ -1,0 +1,9 @@
+{
+	"extends": "@tsconfig/svelte/tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"declaration": true,
+		"incremental": true,
+		"isolatedModules": true
+	}
+}
