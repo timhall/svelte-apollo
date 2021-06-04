@@ -1,6 +1,7 @@
-/dist
+dist
 
 node_modules
 .vscode
 .DS_store
 coverage
+*.cache

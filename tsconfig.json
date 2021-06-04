@@ -1,12 +1,5 @@
 {
-	"compilerOptions": {
-		"strict": true,
-		"target": "es5",
-		"moduleResolution": "node",
-		"lib": ["es2015"],
-		"esModuleInterop": true,
-		"skipLibCheck": true
-	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules"]
+	"extends": "./tsconfig.base.json",
+	"references": [{ "path": "packages/svelte-apollo" }],
+	"files": []
 }
