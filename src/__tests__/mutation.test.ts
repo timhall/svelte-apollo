@@ -33,13 +33,16 @@ it("should call client mutate", async () => {
 it("should extend initial options", async () => {
 	setClient({ mutate: () => Promise.resolve(42) } as MockClient);
 
-	const mutate = mutation(gql`
-		mutation sendMessage($message: String!) {
-			sendMessage(message: $message) {
-				messages
+	const mutate = mutation(
+		gql`
+			mutation sendMessage($message: String!) {
+				sendMessage(message: $message) {
+					messages
+				}
 			}
-		}
-	`, { refetchQueries: [] });
+		`,
+		{ refetchQueries: [] }
+	);
 
 	const client = getClient();
 	await mutate({ awaitRefetchQueries: true });

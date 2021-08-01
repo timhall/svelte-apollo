@@ -1,5 +1,5 @@
 {
-	"name": "svelte-apollo",
+	"name": "@dxlb/svelte-apollo",
 	"version": "0.4.0",
 	"author": "Tim Hall <tim.hall.engr@gmail.com>",
 	"license": "MIT",
