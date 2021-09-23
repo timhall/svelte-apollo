@@ -20,14 +20,13 @@
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write \"src/**/*.ts\""
 	},
-	"dependencies": {},
 	"peerDependencies": {
-		"@apollo/client": "^3.2.0",
+		"@apollo/client": "^3.5.0-beta.16",
 		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",
 		"svelte": "^3.0.0"
 	},
 	"devDependencies": {
-		"@apollo/client": "^3.2.3",
+		"@apollo/client": "^3.5.0-beta.16",
 		"@rollup/plugin-typescript": "^6.0.0",
 		"@types/jest": "^26.0.14",
 		"graphql": "^15.3.0",
