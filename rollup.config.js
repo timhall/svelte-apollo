@@ -2,7 +2,7 @@ import typescript from "@rollup/plugin-typescript";
 import dts from "rollup-plugin-dts";
 import filesize from "rollup-plugin-filesize";
 
-const external = ["graphql", "@apollo/client", "@apollo/client/core", "svelte", "svelte/store"];
+const external = ["graphql", "@apollo/client/core", "svelte", "svelte/store"];
 
 export default [
 	{
@@ -10,13 +10,8 @@ export default [
 		external,
 		output: [
 			{
-				file: "dist/svelte-apollo.es.js",
+				file: "dist/svelte-apollo.js",
 				format: "es",
-				sourcemap: true,
-			},
-			{
-				file: "dist/svelte-apollo.cjs.js",
-				format: "cjs",
 				sourcemap: true,
 			},
 		],

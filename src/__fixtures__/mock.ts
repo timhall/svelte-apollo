@@ -1,5 +1,6 @@
 import { Observable } from "@apollo/client/core";
 import { extensions } from "../observable";
+import { jest } from "@jest/globals";
 
 export type Mock = {
 	calls: Array<any[]>;

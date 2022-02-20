@@ -4,13 +4,17 @@
 	"author": "Tim Hall <tim.hall.engr@gmail.com>",
 	"license": "MIT",
 	"repository": "https://github.com/timhall/svelte-apollo.git",
-	"main": "dist/svelte-apollo.cjs.js",
-	"module": "dist/svelte-apollo.es.js",
+	"type": "module",
+	"main": "./dist/svelte-apollo.js",
+	"exports": {
+		".": "./dist/svelte-apollo.js"
+	},
 	"types": "dist/svelte-apollo.d.ts",
 	"keywords": [
 		"svelte",
 		"apollo",
-		"graphql"
+		"graphql",
+		"svelte-kit"
 	],
 	"scripts": {
 		"build": "rollup -c",
@@ -20,25 +24,24 @@
 		"typecheck": "tsc --noEmit",
 		"format": "prettier --write \"src/**/*.ts\""
 	},
-	"dependencies": {},
 	"peerDependencies": {
-		"@apollo/client": "^3.2.0",
-		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",
+		"@apollo/client": "^3.0.0",
+		"graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0",
 		"svelte": "^3.0.0"
 	},
 	"devDependencies": {
-		"@apollo/client": "^3.2.3",
-		"@rollup/plugin-typescript": "^6.0.0",
-		"@types/jest": "^26.0.14",
-		"graphql": "^15.3.0",
-		"jest": "^26.5.2",
-		"prettier": "^2.1.2",
-		"rollup": "^2.29.0",
-		"rollup-plugin-dts": "^1.4.13",
-		"rollup-plugin-filesize": "^9.0.2",
-		"svelte": "^3.29.0",
-		"ts-jest": "^26.4.1",
-		"typescript": "^4.0.3"
+		"@apollo/client": "^3.5.9",
+		"@jest/globals": "^27.5.1",
+		"@rollup/plugin-typescript": "^6.1.0",
+		"graphql": "^15.8.0",
+		"jest": "^27.5.1",
+		"prettier": "^2.5.1",
+		"rollup": "^2.67.3",
+		"rollup-plugin-dts": "^1.4.14",
+		"rollup-plugin-filesize": "^9.1.2",
+		"svelte": "^3.46.4",
+		"ts-jest": "^27.1.3",
+		"typescript": "^4.5.5"
 	},
 	"jest": {
 		"testEnvironment": "node",

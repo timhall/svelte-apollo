@@ -1,5 +1,14 @@
 import { getClient, setClient } from "..";
 import { getContext, setContext } from "svelte";
+import {
+	jest,
+	test,
+	expect,
+	beforeAll,
+	beforeEach,
+	afterEach,
+	afterAll,
+} from "@jest/globals";
 
 jest.mock("svelte");
 

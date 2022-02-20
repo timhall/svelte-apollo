@@ -3,6 +3,7 @@ import { subscribe } from "..";
 import { getClient, setClient } from "../context";
 import { getMock } from "../__fixtures__/mock";
 import { read } from "../__fixtures__/read";
+import { jest, test, expect } from "@jest/globals";
 
 jest.mock("../context");
 
@@ -12,11 +13,11 @@ const NEW_MESSAGES = gql`
 	}
 `;
 
-it("should export subscription", () => {
+test("should export subscription", () => {
 	expect(typeof subscribe).toBe("function");
 });
 
-it("should observe subscription", async () => {
+test("should observe subscription", async () => {
 	setClient({
 		subscribe() {
 			return Observable.of({ data: 1 }, { data: 2 }, { data: 3 });

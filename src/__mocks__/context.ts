@@ -1,4 +1,5 @@
 import { mockObservableQuery } from "../__fixtures__/mock";
+import { jest } from "@jest/globals";
 
 export interface MockApolloClient {
 	watchQuery: any;

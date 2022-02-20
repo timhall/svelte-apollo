@@ -1,4 +1,4 @@
-import type { FetchResult, MutationOptions } from "@apollo/client";
+import type { FetchResult, MutationOptions } from "@apollo/client/core";
 import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
 
