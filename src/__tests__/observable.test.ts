@@ -2,6 +2,7 @@ import { ApolloError, Observable } from "@apollo/client/core";
 import { GraphQLError } from "graphql";
 import { Data, observableToReadable } from "../observable";
 import { read } from "../__fixtures__/read";
+import { test, expect } from "@jest/globals";
 
 test("should return ApolloError for errors", async () => {
 	const readable = observableToReadable(

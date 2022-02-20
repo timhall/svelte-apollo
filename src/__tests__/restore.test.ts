@@ -3,6 +3,7 @@ import { restore } from "..";
 import { getClient, setClient } from "../context";
 import { restoring } from "../restore";
 import { getMock } from "../__fixtures__/mock";
+import { jest, test, expect } from "@jest/globals";
 
 jest.mock("../context");
 
@@ -12,11 +13,11 @@ const MESSAGES = gql`
 	}
 `;
 
-it("should export restore", () => {
+test("should export restore", () => {
 	expect(typeof restore).toBe("function");
 });
 
-it("should add client to restoring set", () => {
+test("should add client to restoring set", () => {
 	setClient({} as any);
 	restore(MESSAGES, { data: { messages: [] } });
 
@@ -24,7 +25,7 @@ it("should add client to restoring set", () => {
 	expect(restoring.has(client)).toEqual(true);
 });
 
-it("should call client writeQuery", () => {
+test("should call client writeQuery", () => {
 	setClient({} as any);
 	restore(MESSAGES, { data: { messages: [] } });
 

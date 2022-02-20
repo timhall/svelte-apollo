@@ -5,6 +5,7 @@ import { Result } from "../observable";
 import { restoring } from "../restore";
 import { getMock, MockClient, mockObservableQuery } from "../__fixtures__/mock";
 import { read } from "../__fixtures__/read";
+import { jest, expect, describe, test } from "@jest/globals";
 
 jest.mock("../context");
 
@@ -16,11 +17,11 @@ const MESSAGE_BY_ID = gql`
 	}
 `;
 
-it("should export query", () => {
+test("should export query", () => {
 	expect(typeof query).toBe("function");
 });
 
-it("should call watchQuery with options", async () => {
+test("should call watchQuery with options", async () => {
 	setClient({ mutate: () => Promise.resolve(42) } as MockClient);
 
 	const store = query(MESSAGE_BY_ID, { variables: { id: 1 } });
@@ -36,7 +37,7 @@ it("should call watchQuery with options", async () => {
 	expect(options.variables).toEqual({ id: 1 });
 });
 
-it("should expose ObservableQuery functions", () => {
+test("should expose ObservableQuery functions", () => {
 	const store = query(MESSAGE_BY_ID, { variables: { id: 2 } });
 
 	expect(typeof store.fetchMore).toBe("function");
@@ -56,14 +57,14 @@ it("should expose ObservableQuery functions", () => {
 });
 
 describe("restore", () => {
-	it("should not attempt readQuery if not restoring", () => {
+	test("should not attempt readQuery if not restoring", () => {
 		const store = query(MESSAGE_BY_ID, { variables: { id: 3 } });
 
 		const client = getClient();
 		expect(client.readQuery).not.toHaveBeenCalled();
 	});
 
-	it("should attempt readQuery if restoring", () => {
+	test("should attempt readQuery if restoring", () => {
 		const client = getClient();
 		restoring.add(client);
 
@@ -76,7 +77,7 @@ describe("restore", () => {
 		expect(options.variables).toEqual({ id: 4 });
 	});
 
-	it("should have initial synchronous value from readQuery", async () => {
+	test("should have initial synchronous value from readQuery", async () => {
 		const initial = { message: "Howdy" };
 		setClient({
 			readQuery: () => initial,
@@ -92,7 +93,7 @@ describe("restore", () => {
 		expect(initialValue).toEqual({ data: initial });
 	});
 
-	it("should not have duplicate value when using readQuery", async () => {
+	test("should not have duplicate value when using readQuery", async () => {
 		const initial = { data: { name: "Tim" } };
 		setClient({
 			readQuery: () => initial,
@@ -108,7 +109,7 @@ describe("restore", () => {
 		expect(values.length).toEqual(1);
 	});
 
-	it("should swallow errors from readQuery", async () => {
+	test("should swallow errors from readQuery", async () => {
 		setClient({
 			readQuery: () => {
 				throw new Error("(swallowed)");

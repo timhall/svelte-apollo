@@ -1,4 +1,4 @@
-import type { ApolloClient } from "@apollo/client";
+import type { ApolloClient } from "@apollo/client/core";
 import { getContext, setContext } from "svelte";
 
 const CLIENT = typeof Symbol !== "undefined" ? Symbol("client") : "@@client";

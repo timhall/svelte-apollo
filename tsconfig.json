@@ -1,12 +1,18 @@
 {
 	"compilerOptions": {
-		"strict": true,
-		"target": "es5",
+		"target": "es2020",
+		"lib": ["es2020"],
+		"module": "es2020",
 		"moduleResolution": "node",
-		"lib": ["es2015"],
-		"esModuleInterop": true,
-		"skipLibCheck": true
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"noEmit": true
 	},
 	"include": ["src/**/*"],
-	"exclude": ["node_modules"]
+	"exclude": [
+		"node_modules",
+		"src/**/__tests__/**",
+		"src/**/__fixtures__/**",
+		"src/**/__mocks__/**"
+	]
 }
