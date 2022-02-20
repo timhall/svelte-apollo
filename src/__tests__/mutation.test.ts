@@ -30,3 +30,26 @@ test("should call client mutate", async () => {
 	expect(options.mutation).toBeDefined();
 	expect(options.variables).toEqual({ message: "Howdy!" });
 });
+
+test("should extend initial options", async () => {
+	setClient({ mutate: () => Promise.resolve(42) } as MockClient);
+
+	const mutate = mutation(
+		gql`
+			mutation sendMessage($message: String!) {
+				sendMessage(message: $message) {
+					messages
+				}
+			}
+		`,
+		{ refetchQueries: [] }
+	);
+
+	const client = getClient();
+	await mutate({ awaitRefetchQueries: true });
+
+	const [[options]] = getMock(client.mutate).calls;
+
+	expect(options.refetchQueries).toEqual([]);
+	expect(options.awaitRefetchQueries).toEqual(true);
+});
