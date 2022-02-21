@@ -10,23 +10,26 @@ import type { Readable } from "svelte/store";
 // Match Apollo's hook approach, by returning a result with three states:
 // loading, error, or data (where data could be null / undefined)
 
-export interface Loading {
+export interface LoadingState {
 	loading: true;
 	data?: undefined;
 	error?: undefined;
 }
-export interface ReadableError {
+export interface ErrorState {
 	loading: false;
 	data?: undefined;
 	error: ApolloError | Error;
 }
-export interface Data<TData = unknown> {
+export interface DataState<TData = unknown> {
 	loading: false;
 	data: TData | null | undefined;
 	error?: undefined;
 }
 
-export type Result<TData = unknown> = Loading | ReadableError | Data<TData>;
+export type Result<TData = unknown> =
+	| LoadingState
+	| ErrorState
+	| DataState<TData>;
 
 // Some methods, e.g. subscription, use Observable<FetchResult>,
 // convert this more raw value to a readable
@@ -46,7 +49,7 @@ export function observableToReadable<TData = unknown>(
 		let skipped = false;
 
 		const subscription = observable.subscribe(
-			(result) => {
+			(result: FetchResult<TData>) => {
 				if (skipDuplicate && !skipped) {
 					skipped = true;
 					return;
@@ -59,7 +62,12 @@ export function observableToReadable<TData = unknown>(
 					set({ loading: false, data: result.data, error: undefined });
 				}
 			},
-			(error) => set({ loading: false, data: undefined, error })
+			(error: any) =>
+				set({
+					loading: false,
+					data: undefined,
+					error: error && "message" in error ? error : new Error(error),
+				})
 		);
 
 		return () => subscription.unsubscribe();

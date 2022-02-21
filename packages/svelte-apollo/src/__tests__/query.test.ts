@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client/core";
 import { get } from "svelte/store";
 import { getClient, query, setClient } from "..";
-import { Result } from "../observable";
+import type { Result } from "../observable";
 import { restoring } from "../restore";
 import { getMock, MockClient, mockObservableQuery } from "../__fixtures__/mock";
 import { read } from "../__fixtures__/read";

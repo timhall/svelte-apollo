@@ -9,3 +9,7 @@ charset = utf-8
 [*.md]
 indent_style = space
 indent_size = 2
+
+[*.yaml]
+indent_style = space
+indent_size = 2
