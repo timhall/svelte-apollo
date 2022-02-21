@@ -1,5 +1,6 @@
 {
 	"name": "@svelte-apollo/example-sveltekit",
+	"private": true,
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "svelte-kit dev",
