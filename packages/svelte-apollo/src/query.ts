@@ -1,7 +1,7 @@
 import type { WatchQueryOptions } from "@apollo/client/core";
 import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
-import { Data, observableQueryToReadable } from "./observable";
+import { DataState, observableQueryToReadable } from "./observable";
 import type { ReadableQuery } from "./observable";
 import { restoring } from "./restore";
 
@@ -32,7 +32,7 @@ export function query<TData = unknown, TVariables = unknown>(
 		initialValue !== undefined
 			? ({
 					data: initialValue,
-			  } as Data<TData>)
+			  } as DataState<TData>)
 			: undefined
 	);
 
