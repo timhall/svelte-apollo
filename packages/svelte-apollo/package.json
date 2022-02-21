@@ -1,6 +1,6 @@
 {
 	"name": "svelte-apollo",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"author": "Tim Hall <tim.hall.engr@gmail.com>",
 	"license": "MIT",
 	"repository": "https://github.com/timhall/svelte-apollo.git",
