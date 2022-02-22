@@ -6,9 +6,11 @@
 	"license": "MIT",
 	"repository": "https://github.com/timhall/svelte-apollo.git",
 	"scripts": {
+		"build": "pnpm run build --filter svelte-apollo",
 		"test": "jest"
 	},
 	"devDependencies": {
+		"@changesets/cli": "^2.21.0",
 		"jest": "^27.5.1"
 	}
 }

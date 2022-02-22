@@ -1,6 +1,6 @@
 import { ApolloError, Observable } from "@apollo/client/core";
 import { GraphQLError } from "graphql";
-import { Data, observableToReadable } from "../observable";
+import { DataState, observableToReadable } from "../observable";
 import { read } from "../__fixtures__/read";
 import { test, expect } from "@jest/globals";
 
@@ -29,7 +29,7 @@ test("should return observable error", async () => {
 test("should skip initial loading status, if initial value is given", async () => {
 	const readable = observableToReadable(
 		Observable.of({ data: 1 }, { data: 2 }, { data: 3 }),
-		{ data: 1 } as Data<number>
+		{ data: 1 } as DataState<number>
 	);
 
 	const values = (await read(readable)).map((result) => result.data);
