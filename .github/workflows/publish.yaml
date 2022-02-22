@@ -12,7 +12,7 @@ env:
 jobs:
   publish:
     # Prevents this action from running on forks
-    if: github.repository == "timhall/svelte-apollo"
+    if: github.repository == 'timhall/svelte-apollo'
     name: Publish
     runs-on: ubuntu-latest
     steps:
