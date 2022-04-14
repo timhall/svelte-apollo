@@ -11,7 +11,7 @@ The following simple example shows how to run a simple query with svelte-apollo.
 <Books />
 
 <script>
-  import { ApolloClient } from "@apollo/client";
+  import { ApolloClient } from "@apollo/client/core";
   import { setClient } from "svelte-apollo";
   import Books from "./Books.svelte";
 
