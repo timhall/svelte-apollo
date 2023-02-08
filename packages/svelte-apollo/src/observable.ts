@@ -1,4 +1,4 @@
-import { ApolloError } from "@apollo/client/core";
+import { ApolloError, OperationVariables } from "@apollo/client/core";
 import type {
 	FetchResult,
 	Observable,
@@ -120,7 +120,7 @@ export type ReadableQuery<TData> = ReadableResult<TData> &
 
 export function observableQueryToReadable<
 	TData = unknown,
-	TVariables = unknown
+	TVariables extends OperationVariables = OperationVariables
 >(
 	query: ObservableQuery<TData, TVariables>,
 	initialValue?: Result<TData>

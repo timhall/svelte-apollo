@@ -1,4 +1,8 @@
-import type { FetchResult, MutationOptions } from "@apollo/client/core";
+import type {
+	FetchResult,
+	MutationOptions,
+	OperationVariables,
+} from "@apollo/client/core";
 import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
 
@@ -11,7 +15,10 @@ export type Mutate<T = unknown, TVariables = unknown> = (
 	options: MutateOptions<T, TVariables>
 ) => Promise<FetchResult<T>>;
 
-export function mutation<T = unknown, TVariables = unknown>(
+export function mutation<
+	T = unknown,
+	TVariables extends OperationVariables = OperationVariables
+>(
 	mutation: DocumentNode,
 	initialOptions: MutateOptions<T, TVariables> = {}
 ): Mutate<T, TVariables> {

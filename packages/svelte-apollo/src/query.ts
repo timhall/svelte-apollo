@@ -1,11 +1,17 @@
-import type { WatchQueryOptions } from "@apollo/client/core";
+import type {
+	WatchQueryOptions,
+	OperationVariables,
+} from "@apollo/client/core";
 import type { DocumentNode } from "graphql";
 import { getClient } from "./context";
 import { DataState, observableQueryToReadable } from "./observable";
 import type { ReadableQuery } from "./observable";
 import { restoring } from "./restore";
 
-export function query<TData = unknown, TVariables = unknown>(
+export function query<
+	TData = unknown,
+	TVariables extends OperationVariables = OperationVariables
+>(
 	query: DocumentNode,
 	options: Omit<WatchQueryOptions<TVariables, TData>, "query"> = {}
 ): ReadableQuery<TData> {
