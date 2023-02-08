@@ -1,4 +1,4 @@
-import { ApolloError, Observable } from "@apollo/client/core";
+import { ApolloError, Observable, FetchResult } from "@apollo/client/core";
 import { GraphQLError } from "graphql";
 import { DataState, observableToReadable } from "../observable";
 import { read } from "../__fixtures__/read";
@@ -16,7 +16,7 @@ test("should return ApolloError for errors", async () => {
 
 test("should return observable error", async () => {
 	const readable = observableToReadable(
-		new Observable(() => {
+		new Observable<FetchResult<unknown>>(() => {
 			throw new Error("Internal Error");
 		})
 	);
